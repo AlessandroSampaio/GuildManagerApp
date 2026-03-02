@@ -8,6 +8,9 @@ import {
   TextField,
 } from "../ui/TextField";
 import { useNavigate } from "@solidjs/router";
+import { authApi } from "@/api/auth";
+import { authStore } from "@/stores/auth";
+import { ApiError } from "@/api/client";
 
 const LoginFormPanel: Component = () => {
   const navigate = useNavigate();
@@ -17,8 +20,18 @@ const LoginFormPanel: Component = () => {
     validate: zodForm(loginSchema),
   });
 
-  const handleSubmit: SubmitHandler<LoginForm> = (values: LoginForm) => {
-    console.log(`Submitted : `, values);
+  const handleSubmit: SubmitHandler<LoginForm> = async (values: LoginForm) => {
+    try {
+      const data = await authApi.login(values);
+      authStore.setTokens(data.accessToken, data.refreshToken, data.user);
+      navigate("/app/dashboard");
+    } catch (err) {
+      setServerError(
+        err instanceof ApiError
+          ? err.message
+          : "Não foi possível conectar ao servidor.",
+      );
+    }
   };
 
   return (
