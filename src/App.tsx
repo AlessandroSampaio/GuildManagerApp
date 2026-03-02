@@ -7,6 +7,7 @@ import AppShell from "./components/layout/AppShell";
 
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
+const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 
 const RootRedirect: Component = () => {
   const nav = useNavigate();
@@ -37,13 +38,14 @@ const App: Component = () => (
     <Route path={"/login"} component={LoginShell} />
     <Route
       path="/app"
-      component={() => (
+      component={(props) => (
         <Guard>
-          <AppShell />
+          <AppShell {...props} />
         </Guard>
       )}
     >
       <Route path="/dashboard" component={DashboardPage} />
+      <Route path="/settings" component={SettingsPage} />
     </Route>
   </HashRouter>
 );

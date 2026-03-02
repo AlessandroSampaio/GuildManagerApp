@@ -42,6 +42,23 @@ const NAV = [
       </svg>
     ),
   },
+  {
+    href: "/app/settings",
+    label: "Configurações",
+    icon: (active: boolean) => (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 15 15"
+        fill="none"
+        stroke={active ? "#c8741c" : "currentColor"}
+        stroke-width="1.2"
+      >
+        <circle cx="7.5" cy="7.5" r="2.2" />
+        <path d="M7.5 1v1.5M7.5 12.5V14M1 7.5h1.5M12.5 7.5H14M2.7 2.7l1.06 1.06M11.24 11.24l1.06 1.06M2.7 12.3l1.06-1.06M11.24 3.76l1.06-1.06" />
+      </svg>
+    ),
+  },
 ];
 
 const Sidebar: Component = () => {
@@ -61,7 +78,7 @@ const Sidebar: Component = () => {
   const initials = () => (authStore.user()?.username ?? "?")[0].toUpperCase();
 
   return (
-    <aside class="w-52 bg-void-950 border-r border-void-700 flex flex-col shrink-0">
+    <aside class="w-[13.3rem] bg-void-950 border-r border-void-700 flex flex-col shrink-0">
       {/* Avatar */}
       <div class="p-4 border-b border-void-700">
         <div class="flex items-center gap-3">
