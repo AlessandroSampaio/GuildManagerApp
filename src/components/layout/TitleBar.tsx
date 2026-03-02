@@ -1,17 +1,23 @@
 /**
  * Frameless application titlebar.
  *
- * Window controls (minimise, maximise, close) are called via the TauRPC
+ * Window controls (minimize, maximize, close) are called via the TauRPC
  * `windowIpc` proxy — fully typed, no raw `invoke()` strings.
  */
-
-import { Component, createSignal } from "solid-js";
+import { Component, createSignal, onMount } from "solid-js";
+import { createTauRPCProxy } from "@/ipc/bindings";
 
 const TitleBar: Component = () => {
   const [maximized, setMaximized] = createSignal(false);
+  const rpc = createTauRPCProxy();
+
+  onMount(async () => {
+    setMaximized(await rpc.window.is_maximized());
+  });
 
   async function handleToggleMax() {
-    setMaximized(!maximized());
+    await rpc.window.toggle_maximize();
+    setMaximized(await rpc.window.is_maximized());
   }
 
   return (
@@ -23,7 +29,7 @@ const TitleBar: Component = () => {
           <div class="absolute inset-[3px] bg-ember-700 rotate-45" />
         </div>
         <span class="font-display text-[9px] tracking-[0.3em] text-ember-700 uppercase">
-          WarcraftLogs
+          Guild Manager v1.1.0
         </span>
       </div>
 
@@ -32,10 +38,10 @@ const TitleBar: Component = () => {
 
       {/* Window controls — no-drag so clicks reach the buttons */}
       <div class="flex items-center h-full no-drag">
-        {/* Minimise */}
+        {/* Minimize */}
         <button
           title="Minimizar"
-          onClick={() => console.log("windowIpc.minimize()")}
+          onClick={() => rpc.window.minimize()}
           class="w-10 h-full flex items-center justify-center text-stone-500
                      hover:text-stone-200 hover:bg-void-700 transition-colors duration-150"
         >
@@ -51,7 +57,7 @@ const TitleBar: Component = () => {
           </svg>
         </button>
 
-        {/* Maximise / restore — icon changes based on state */}
+        {/* Maximize / restore — icon changes based on state */}
         <button
           title={maximized() ? "Restaurar" : "Maximizar"}
           onClick={handleToggleMax}
@@ -73,7 +79,7 @@ const TitleBar: Component = () => {
                 <path d="M2.5 5.5v8h8" />
               </>
             ) : (
-              /* Maximise icon: single square */
+              /* Maximize icon: single square */
               <rect x="2.5" y="2.5" width="11" height="11" rx="0.5" />
             )}
           </svg>
@@ -82,7 +88,7 @@ const TitleBar: Component = () => {
         {/* Close */}
         <button
           title="Fechar"
-          onClick={() => console.log("close()")}
+          onClick={() => rpc.window.close()}
           class="w-10 h-full flex items-center justify-center text-stone-500
                      hover:text-white hover:bg-red-800 transition-colors duration-150"
         >
