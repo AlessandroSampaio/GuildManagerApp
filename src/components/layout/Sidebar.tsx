@@ -1,6 +1,6 @@
 import { authApi } from "@/api/auth";
 import { authStore } from "@/stores/auth";
-import { A, useLocation } from "@solidjs/router";
+import { A, useLocation, useNavigate } from "@solidjs/router";
 import { Component, For } from "solid-js";
 
 const NAV = [
@@ -46,10 +46,15 @@ const NAV = [
 
 const Sidebar: Component = () => {
   const loc = useLocation();
+  const nav = useNavigate();
 
   async function logout() {
     const rt = authStore.refreshToken();
-    if (rt) await authApi.logout(rt).catch(() => {});
+    if (rt)
+      await authApi
+        .logout(rt)
+        .then(() => nav("/"))
+        .catch(() => {});
     authStore.clear();
   }
 
