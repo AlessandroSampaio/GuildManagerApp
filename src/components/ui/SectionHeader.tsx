@@ -9,7 +9,7 @@ type SectionHeaderProps = {
 const SectionHeader = (props: SectionHeaderProps) => (
   <div class="flex items-start justify-between mb-6">
     <div>
-      <p class="text-xs mb-1">{props.label}</p>
+      <p class="label-xs mb-1">{props.label}</p>
       <h2 class="font-display text-xl text-stone-100 tracking-wide">
         {props.title}
       </h2>
