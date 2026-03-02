@@ -10,6 +10,7 @@ import { authStore } from "./stores/auth";
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
+const ReportsPage = lazy(() => import("@/pages/ReportsPage"));
 
 const RootRedirect: Component = () => {
   const nav = useNavigate();
@@ -48,6 +49,7 @@ const App: Component = () => (
         )}
       >
         <Route path="/dashboard" component={DashboardPage} />
+        <Route path="/reports" component={ReportsPage} />
         <Route path="/settings" component={SettingsPage} />
       </Route>
     </HashRouter>
