@@ -1,9 +1,11 @@
 import { HashRouter, Route, useNavigate } from "@solidjs/router";
+import { QueryClientProvider } from "@tanstack/solid-query";
 import { Component, lazy } from "solid-js";
-import "./index.css";
-import TitleBar from "./components/layout/TitleBar";
-import { authStore } from "./stores/auth";
 import AppShell from "./components/layout/AppShell";
+import TitleBar from "./components/layout/TitleBar";
+import "./index.css";
+import { queryClient } from "./lib";
+import { authStore } from "./stores/auth";
 
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
@@ -33,21 +35,23 @@ const Guard: Component<{ children: any }> = (p) => {
 };
 
 const App: Component = () => (
-  <HashRouter>
-    <Route path="/" component={RootRedirect} />
-    <Route path={"/login"} component={LoginShell} />
-    <Route
-      path="/app"
-      component={(props) => (
-        <Guard>
-          <AppShell {...props} />
-        </Guard>
-      )}
-    >
-      <Route path="/dashboard" component={DashboardPage} />
-      <Route path="/settings" component={SettingsPage} />
-    </Route>
-  </HashRouter>
+  <QueryClientProvider client={queryClient}>
+    <HashRouter>
+      <Route path="/" component={RootRedirect} />
+      <Route path={"/login"} component={LoginShell} />
+      <Route
+        path="/app"
+        component={(props) => (
+          <Guard>
+            <AppShell {...props} />
+          </Guard>
+        )}
+      >
+        <Route path="/dashboard" component={DashboardPage} />
+        <Route path="/settings" component={SettingsPage} />
+      </Route>
+    </HashRouter>
+  </QueryClientProvider>
 );
 
 export default App;
