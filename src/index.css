@@ -82,7 +82,7 @@
 
     .card-interactive {
         @apply card cursor-pointer hover:border-ember-900 hover:bg-void-700
-           transition-all duration-200 group;
+           transition-all duration-200;
     }
 
     /* Labels */

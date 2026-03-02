@@ -1,4 +1,9 @@
-import type { ImportResult, ReportDetail, Report } from "@/types/reports";
+import type {
+  ImportResult,
+  ReportDetail,
+  Report,
+  PerformanceEntry,
+} from "@/types/reports";
 import { req } from "./client";
 
 export const reportsApi = {

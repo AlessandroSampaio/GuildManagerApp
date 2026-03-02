@@ -1,5 +1,5 @@
 import { ApiError } from "@/api/client";
-import { useChangePassword } from "@/lib/queries/auth";
+import { useChangePassword } from "@/lib";
 import {
   ChangePasswordForm,
   changePasswordSchema,
