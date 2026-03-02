@@ -16,4 +16,9 @@ export const authApi = {
       method: "POST",
       body: JSON.stringify({ refreshToken }),
     }),
+  changePassword: (d: { currentPassword: string; newPassword: string }) =>
+    req<void>("/api/auth/change-password", {
+      method: "PATCH",
+      body: JSON.stringify(d),
+    }),
 };

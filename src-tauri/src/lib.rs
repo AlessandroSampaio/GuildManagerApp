@@ -39,7 +39,6 @@ pub fn run() {
         .setup(move |app| {
             // Seed the handle into the shared slot; all subsequent IPC calls
             // will find it populated since setup runs before the event loop.
-
             let handle = app.handle().clone();
 
             let _ = tokio::task::spawn_blocking(move || {

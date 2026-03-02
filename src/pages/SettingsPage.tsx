@@ -1,3 +1,4 @@
+import ChangePasswordCard from "@/components/ChangePasswordCard";
 import SectionHeader from "@/components/ui/SectionHeader";
 import WclOAuthCard from "@/components/WclOAuthCard";
 import { authStore } from "@/stores/auth";
@@ -38,6 +39,7 @@ const SettingsPage = () => {
         </div>
 
         <WclOAuthCard />
+        <ChangePasswordCard />
       </div>
     </div>
   );
