@@ -7,6 +7,7 @@
       "dependencies": {
         "@modular-forms/solid": "^0.25.1",
         "@solidjs/router": "^0.15.4",
+        "@tanstack/solid-query": "^5.90.23",
         "@tauri-apps/api": "^2",
         "@tauri-apps/plugin-opener": "^2",
         "autoprefixer": "^10.4.27",
@@ -184,6 +185,10 @@
     "@rollup/rollup-win32-x64-msvc": ["@rollup/rollup-win32-x64-msvc@4.59.0", "", { "os": "win32", "cpu": "x64" }, "sha512-2HRCml6OztYXyJXAvdDXPKcawukWY2GpR5/nxKp4iBgiO3wcoEGkAaqctIbZcNB6KlUQBIqt8VYkNSj2397EfA=="],
 
     "@solidjs/router": ["@solidjs/router@0.15.4", "", { "peerDependencies": { "solid-js": "^1.8.6" } }, "sha512-WOpgg9a9T638cR+5FGbFi/IV4l2FpmBs1GpIMSPa0Ce9vyJN7Wts+X2PqMf9IYn0zUj2MlSJtm1gp7/HI/n5TQ=="],
+
+    "@tanstack/query-core": ["@tanstack/query-core@5.90.20", "", {}, "sha512-OMD2HLpNouXEfZJWcKeVKUgQ5n+n3A2JFmBaScpNDUqSrQSjiveC7dKMe53uJUg1nDG16ttFPz2xfilz6i2uVg=="],
+
+    "@tanstack/solid-query": ["@tanstack/solid-query@5.90.23", "", { "dependencies": { "@tanstack/query-core": "5.90.20" }, "peerDependencies": { "solid-js": "^1.6.0" } }, "sha512-pbZc4+Kgm7ktzIuu01R3KOWfazQKgNp4AZvW0RSvv+sNMpYoileUDAkXEcjDJe6RJmb3fVvTR4LlcSL5pxDElQ=="],
 
     "@tauri-apps/api": ["@tauri-apps/api@2.10.1", "", {}, "sha512-hKL/jWf293UDSUN09rR69hrToyIXBb8CjGaWC7gfinvnQrBVvnLr08FeFi38gxtugAVyVcTa5/FD/Xnkb1siBw=="],
 
