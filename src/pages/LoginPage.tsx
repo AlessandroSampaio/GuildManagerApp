@@ -11,7 +11,6 @@ const RuneCorner: Component<{ class?: string }> = (p) => (
 
 const LoginPage: Component = () => {
   const [mode, setMode] = createSignal<"login" | "register">("login");
-  const [loading] = createSignal(false);
 
   return (
     <div class="flex-1 flex items-center justify-center relative overflow-hidden bg-void-900">
@@ -69,7 +68,7 @@ const LoginPage: Component = () => {
               </div>
             </div>
             <h1 class="font-display text-sm text-ember-600 tracking-[0.22em]">
-              WarcraftLogs
+              Guild Manager
             </h1>
             <p class="font-mono text-[10px] text-stone-600 tracking-[0.2em] mt-1 uppercase">
               Desktop Client
@@ -97,9 +96,9 @@ const LoginPage: Component = () => {
           </div>
 
           {/*
-                Show/fallback causes full unmount+remount on mode change,
-                which resets each FormStore independently — intentional.
-              */}
+              Show/fallback causes full unmount+remount on mode change,
+              which resets each FormStore independently — intentional.
+          */}
           <div role="tabpanel">
             <Show when={mode() === "login"} fallback={<p>Register Form</p>}>
               <LoginFormPanel />
