@@ -39,8 +39,15 @@ pub fn run() {
         .setup(move |app| {
             // Seed the handle into the shared slot; all subsequent IPC calls
             // will find it populated since setup runs before the event loop.
-            let mut slot = app_slot_setup.blocking_lock();
-            *slot = Some(app.handle().clone());
+
+            let handle = app.handle().clone();
+
+            let _ = tokio::task::spawn_blocking(move || {
+                // This shall block until the `lock` is released.
+                let mut slot = app_slot_setup.blocking_lock();
+                *slot = Some(handle.clone());
+            });
+
             Ok(())
         })
         .invoke_handler(router.into_handler())
