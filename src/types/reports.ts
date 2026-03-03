@@ -24,8 +24,7 @@ export interface Fight {
   fightIndex: number;
   name: string;
   kill: boolean | null;
-  startTimeMs: number;
-  endTimeMs: number;
+  durationMs: number;
   difficulty: number;
 }
 export interface ImportResult {

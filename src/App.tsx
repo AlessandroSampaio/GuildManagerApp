@@ -6,11 +6,13 @@ import TitleBar from "./components/layout/TitleBar";
 import "./index.css";
 import { queryClient } from "./lib";
 import { authStore } from "./stores/auth";
+import { SolidQueryDevtools } from "@tanstack/solid-query-devtools";
 
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
 const ReportsPage = lazy(() => import("@/pages/ReportsPage"));
+const ReportDetailPage = lazy(() => import("@/pages/ReportDetailPage"));
 
 const RootRedirect: Component = () => {
   const nav = useNavigate();
@@ -50,9 +52,11 @@ const App: Component = () => (
       >
         <Route path="/dashboard" component={DashboardPage} />
         <Route path="/reports" component={ReportsPage} />
+        <Route path="/reports/:code" component={ReportDetailPage} />
         <Route path="/settings" component={SettingsPage} />
       </Route>
     </HashRouter>
+    <SolidQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
 );
 
