@@ -15,7 +15,9 @@ export const RankBar: Component<{ value: number | null }> = (p) => {
       <div class="rank-bar flex-1">
         <div class={`rank-bar-fill ${color()}`} style={`width:${pct()}%`} />
       </div>
-      <span class={`font-mono text-[11px] w-8 text-right ${color()}`}>
+      <span
+        class={`font-mono text-[12px] w-8 text-center text-white ${color()}`}
+      >
         {p.value !== null ? pct().toFixed(0) : "—"}
       </span>
     </div>
