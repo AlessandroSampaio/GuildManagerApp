@@ -50,7 +50,9 @@ export function useReportPerformance(
     enabled: () => !!code() && fightId() !== null,
     select: (data: Record<number, PerformanceEntry[]>): PerformanceEntry[] => {
       var rawFightId: number = fightId()!;
-      return (data[rawFightId!] ?? []).sort((a, b) => b.amount - a.amount);
+      return (data[rawFightId!] ?? [])
+        .slice()
+        .sort((a, b) => b.amount - a.amount);
     },
   }));
 }
