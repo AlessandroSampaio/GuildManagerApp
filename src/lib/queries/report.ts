@@ -6,7 +6,7 @@ import {
 } from "@tanstack/solid-query";
 import { reportKeys } from "../query-keys";
 import { reportsApi } from "@/api/reports";
-import { PerformanceEntry } from "@/types/reports";
+import { PerformanceEntry, ReportDetail } from "@/types/reports";
 
 export const reportListOptions = (page: () => number) =>
   queryOptions({
@@ -22,15 +22,29 @@ export const reportDetailOptions = (code: () => string) =>
     queryFn: () => reportsApi.get(code()),
     staleTime: 5 * 60 * 1000,
     enabled: () => !!code(),
+    refetchInterval: (query) => {
+      const data = query.state.data as ReportDetail | undefined;
+      return isImportPending(data) ? 3_000 : false;
+    },
   });
 
-export const reportPerformanceOptions = (code: () => string) =>
+export const reportPerformanceOptions = (
+  code: () => string,
+  importStatus?: () => string | undefined,
+) =>
   queryOptions<Record<number, PerformanceEntry[]>, Error, PerformanceEntry[]>({
     queryKey: reportKeys.performance(code()),
     queryFn: () => reportsApi.getPerformance(code()),
     staleTime: 10 * 60 * 1000,
-    enabled: () => !!code(),
+    enabled: () => !!code() && (importStatus?.() ?? "Done") === "Done",
   });
+
+export function isImportPending(detail: ReportDetail | undefined): boolean {
+  if (!detail) return false;
+  return (
+    detail.importStatus === "Queued" || detail.importStatus === "Importing"
+  );
+}
 
 export function useReportList(page: () => number) {
   return useQuery(() => reportListOptions(page));

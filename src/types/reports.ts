@@ -9,6 +9,7 @@ export interface Report {
   fightCount: number;
   killCount: number;
   importedAt: string;
+  importStatus?: "Queued" | "Importing" | "Done" | "Failed";
 }
 export interface ReportDetail {
   id: string;
@@ -18,6 +19,8 @@ export interface ReportDetail {
   guild: Guild | null;
   fights: Fight[];
   importedAt: string;
+  importStatus: "Queued" | "Importing" | "Done" | "Failed";
+  importError: string | null;
 }
 export interface Fight {
   id: number;
@@ -27,6 +30,16 @@ export interface Fight {
   durationMs: number;
   difficulty: number;
 }
+
+export interface PerformanceEntry {
+  characterName: string;
+  spec: string;
+  role: string;
+  amount: number;
+  rankPercent: number | null;
+  bestPercent: number | null;
+}
+
 export interface ImportResult {
   reportCode: string;
   title: string;
@@ -36,11 +49,21 @@ export interface ImportResult {
   performanceEntriesSaved: number;
   guildName: string | null;
 }
-export interface PerformanceEntry {
-  characterName: string;
-  spec: string;
-  role: string;
-  amount: number;
-  rankPercent: number | null;
-  bestPercent: number | null;
+
+export type ImportPhase =
+  | "Started"
+  | "FetchingReport"
+  | "SavingReport"
+  | "FetchingRankings"
+  | "SavingPerformance"
+  | "Completed"
+  | "Failed";
+
+export interface ImportProgressEvent {
+  reportCode: string;
+  phase: ImportPhase;
+  phaseCode: number;
+  message: string;
+  data: ImportResult | { killCount: number } | null;
+  timestamp: string;
 }

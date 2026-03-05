@@ -14,4 +14,13 @@ export const reportsApi = {
     req<ImportResult>(`/api/reports/import/${code}`, { method: "POST" }),
   getPerformance: (code: string) =>
     req<Record<number, PerformanceEntry[]>>(`/api/reports/${code}/performance`),
+  connectImportWs(code: string, token: string | null): WebSocket {
+    const base = (
+      import.meta.env.VITE_API_URL ?? "https://localhost:5001"
+    ).replace(/^https?/, (m: string) => (m === "https" ? "wss" : "ws"));
+    const url = token
+      ? `${base}/api/reports/${code}/ws?access_token=${encodeURIComponent(token)}`
+      : `${base}/api/reports/${code}/ws`;
+    return new WebSocket(url);
+  },
 };
