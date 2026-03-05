@@ -61,11 +61,13 @@ export function useReportDetail(code: () => string) {
 export function useReportPerformance(
   code: () => string,
   fightId: () => number | null,
+  importStatus?: () => string | undefined,
 ) {
   console.log(`new fightId ${fightId() ?? "null"}`);
   return useQuery(() => ({
     ...reportPerformanceOptions(code),
-    enabled: () => !!code() && fightId() !== null,
+    enabled: () =>
+      !!code() && fightId() !== null && (importStatus?.() ?? "Done") === "Done",
     select: (data: Record<number, PerformanceEntry[]>): PerformanceEntry[] => {
       var rawFightId: number = fightId()!;
       return (data[rawFightId!] ?? [])

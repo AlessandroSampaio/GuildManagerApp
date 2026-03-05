@@ -1,22 +1,20 @@
 import { roleClass } from "@/helpers";
 import { useReportPerformance } from "@/lib";
 import { PerformanceEntry } from "@/types/reports";
-import { Component, createEffect, For, Show } from "solid-js";
+import { Component, For, Show } from "solid-js";
 import { RankBar } from "./RankBar";
 import { SkeletonList } from "./Skeleton";
 
 const PerformanceTable: Component<{
-  fightId: number | null;
+  fightId: number;
   reportCode: string;
+  importStatus: () => string | undefined;
 }> = (props) => {
   const perf = useReportPerformance(
     () => props.reportCode,
     () => props.fightId,
+    props.importStatus,
   );
-
-  createEffect(() => {
-    console.log({ props });
-  }, [props.fightId]);
 
   return (
     <Show when={!perf.isLoading} fallback={<SkeletonList rows={5} />}>
