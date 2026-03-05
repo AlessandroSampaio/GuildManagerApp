@@ -4,19 +4,17 @@ import { useInvalidateReport } from "@/lib/queries/report";
 import { useImportWs } from "@/lib/useImportWs";
 import { ImportReportForm, importReportSchema } from "@/schemas/importReport";
 import { authStore } from "@/stores/auth";
-import { ImportResult } from "@/types/reports";
 import { createForm, SubmitHandler, zodForm } from "@modular-forms/solid";
 import { A } from "@solidjs/router";
 import { Component, createEffect, createSignal, Match, Switch } from "solid-js";
-import { FormError, SubmitButton, TextField } from "./ui/TextField";
-import PhaseSteps from "./ui/PhaseSteps";
 import ImportSummary from "./ui/ImportSummary";
+import PhaseSteps from "./ui/PhaseSteps";
+import { FormError, SubmitButton, TextField } from "./ui/TextField";
 
 type ModalView = "form" | "progress" | "done" | "error";
 
 const ImportReportModal: Component<{
   onClose: () => void;
-  onSuccess: (r: ImportResult) => void;
 }> = (p) => {
   const importMutation = useImportReport();
   const invalidateReport = useInvalidateReport();

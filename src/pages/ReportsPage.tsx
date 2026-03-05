@@ -3,7 +3,6 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { SkeletonList } from "@/components/ui/Skeleton";
 import { useReportList } from "@/lib";
-import { ImportResult } from "@/types/reports";
 import { A } from "@solidjs/router";
 import { Component, createSignal, For, Show } from "solid-js";
 
@@ -18,7 +17,6 @@ function fmtDate(iso: string) {
 const ReportsPage: Component = () => {
   const [showModal, setShowModal] = createSignal(false);
   const [page, setPage] = createSignal(1);
-  const [lastResult, setLastResult] = createSignal<ImportResult | null>(null);
 
   const reports = useReportList(page);
 
@@ -53,9 +51,11 @@ const ReportsPage: Component = () => {
           </div>
         }
       />
+
       <Show when={reports.isLoading}>
         <SkeletonList rows={8} />
       </Show>
+
       <Show when={reports.isError}>
         <div class="card text-center py-10">
           <p class="text-red-400 font-semibold text-sm mb-1">
@@ -77,13 +77,18 @@ const ReportsPage: Component = () => {
             />
           }
         >
-          <div class="grid grid-cols-[1fr_120px_80px_80px_100px] gap-2">
+          <div
+            class="grid grid-cols-[1fr_120px_80px_80px_100px] gap-2
+                        px-4 py-2 mb-1"
+            aria-hidden="true"
+          >
             {["Report / Guilda", "Data", "Fights", "Kills", "Duração"].map(
               (h) => (
                 <p class="label-xs">{h}</p>
               ),
             )}
           </div>
+
           <div class="space-y-1.5" role="list">
             <For each={reports.data}>
               {(r, i) => {
@@ -92,46 +97,51 @@ const ReportsPage: Component = () => {
                     new Date(r.startTime).getTime()) /
                     60000,
                 );
-
                 return (
                   <A
                     href={`/app/reports/${r.id}`}
                     role="listitem"
-                    class="card-interactive grid grid-cols-[1fr_120px_80px_80px_100px] gap-2 items-center py-3.5 animate-fade-in"
+                    class="card-interactive grid grid-cols-[1fr_120px_80px_80px_100px]
+                             gap-2 items-center py-3.5"
                     style={`animation-delay:${i() * 30}ms`}
                   >
                     <div class="min-w-0">
-                      <p class="font-semibold text-stone-200 text-sm truncate group-hover:text-ember-500 transition-colors">
-                        {r.title}
-                      </p>
-                      {r.importStatus === "Queued" && (
-                        <span
-                          class="shrink-0 inline-flex items-center gap-1
-                                                            font-mono text-[9px] text-amber-500
-                                                            bg-amber-950/40 border border-amber-900/50 px-1.5 py-0.5"
+                      <div class="flex items-center gap-2">
+                        <p
+                          class="font-semibold text-stone-200 text-sm truncate
+                                     group-hover:text-ember-500 transition-colors"
                         >
-                          <div class="w-1 h-1 rounded-full bg-amber-500 animate-pulse" />
-                          fila
-                        </span>
-                      )}
-                      {r.importStatus === "Importing" && (
-                        <span
-                          class="shrink-0 inline-flex items-center gap-1
-                                font-mono text-[9px] text-ember-500
-                                bg-forge-950/40 border border-ember-900/50 px-1.5 py-0.5"
-                        >
-                          <div class="w-1 h-1 rounded-full bg-ember-500 animate-pulse" />
-                          importando
-                        </span>
-                      )}
-                      {r.importStatus === "Failed" && (
-                        <span
-                          class="shrink-0 font-mono text-[9px] text-red-400
-                            bg-red-950/40 border border-red-900/50 px-1.5 py-0.5"
-                        >
-                          falha
-                        </span>
-                      )}
+                          {r.title}
+                        </p>
+                        {r.importStatus === "Queued" && (
+                          <span
+                            class="shrink-0 inline-flex items-center gap-1
+                                         font-mono text-[9px] text-amber-500
+                                         bg-amber-950/40 border border-amber-900/50 px-1.5 py-0.5"
+                          >
+                            <div class="w-1 h-1 rounded-full bg-amber-500 animate-pulse" />
+                            fila
+                          </span>
+                        )}
+                        {r.importStatus === "Importing" && (
+                          <span
+                            class="shrink-0 inline-flex items-center gap-1
+                                         font-mono text-[9px] text-ember-500
+                                         bg-forge-950/40 border border-ember-900/50 px-1.5 py-0.5"
+                          >
+                            <div class="w-1 h-1 rounded-full bg-ember-500 animate-pulse" />
+                            importando
+                          </span>
+                        )}
+                        {r.importStatus === "Failed" && (
+                          <span
+                            class="shrink-0 font-mono text-[9px] text-red-400
+                                         bg-red-950/40 border border-red-900/50 px-1.5 py-0.5"
+                          >
+                            falha
+                          </span>
+                        )}
+                      </div>
                       <p class="font-mono text-[10px] text-stone-600 truncate">
                         {r.id} · {r.guildName ?? "sem guilda"}
                       </p>
@@ -153,7 +163,6 @@ const ReportsPage: Component = () => {
               }}
             </For>
           </div>
-
           <nav class="flex items-center gap-3 mt-6" aria-label="Paginação">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
@@ -177,12 +186,7 @@ const ReportsPage: Component = () => {
       </Show>
 
       <Show when={showModal()}>
-        <ImportReportModal
-          onClose={() => setShowModal(false)}
-          onSuccess={(r) => {
-            setLastResult(r);
-          }}
-        />
+        <ImportReportModal onClose={() => setShowModal(false)} />
       </Show>
     </div>
   );
