@@ -3,6 +3,7 @@ import type {
   ReportDetail,
   Report,
   PerformanceEntry,
+  ImportAccepted,
 } from "@/types/reports";
 import { req } from "./client";
 
@@ -11,7 +12,7 @@ export const reportsApi = {
     req<Report[]>(`/api/reports?page=${page}&pageSize=${pageSize}`),
   get: (code: string) => req<ReportDetail>(`/api/reports/${code}`),
   import: (code: string) =>
-    req<ImportResult>(`/api/reports/import/${code}`, { method: "POST" }),
+    req<ImportAccepted>(`/api/reports/import/${code}`, { method: "POST" }),
   getPerformance: (code: string) =>
     req<Record<number, PerformanceEntry[]>>(`/api/reports/${code}/performance`),
   connectImportWs(code: string, token: string | null): WebSocket {

@@ -104,6 +104,34 @@ const ReportsPage: Component = () => {
                       <p class="font-semibold text-stone-200 text-sm truncate group-hover:text-ember-500 transition-colors">
                         {r.title}
                       </p>
+                      {r.importStatus === "Queued" && (
+                        <span
+                          class="shrink-0 inline-flex items-center gap-1
+                                                            font-mono text-[9px] text-amber-500
+                                                            bg-amber-950/40 border border-amber-900/50 px-1.5 py-0.5"
+                        >
+                          <div class="w-1 h-1 rounded-full bg-amber-500 animate-pulse" />
+                          fila
+                        </span>
+                      )}
+                      {r.importStatus === "Importing" && (
+                        <span
+                          class="shrink-0 inline-flex items-center gap-1
+                                font-mono text-[9px] text-ember-500
+                                bg-forge-950/40 border border-ember-900/50 px-1.5 py-0.5"
+                        >
+                          <div class="w-1 h-1 rounded-full bg-ember-500 animate-pulse" />
+                          importando
+                        </span>
+                      )}
+                      {r.importStatus === "Failed" && (
+                        <span
+                          class="shrink-0 font-mono text-[9px] text-red-400
+                            bg-red-950/40 border border-red-900/50 px-1.5 py-0.5"
+                        >
+                          falha
+                        </span>
+                      )}
                       <p class="font-mono text-[10px] text-stone-600 truncate">
                         {r.id} · {r.guildName ?? "sem guilda"}
                       </p>

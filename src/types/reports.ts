@@ -67,3 +67,10 @@ export interface ImportProgressEvent {
   data: ImportResult | { killCount: number } | null;
   timestamp: string;
 }
+
+export interface ImportAccepted {
+  reportCode: string;
+  status: string;
+  wsUrl: string;
+  message: string;
+}

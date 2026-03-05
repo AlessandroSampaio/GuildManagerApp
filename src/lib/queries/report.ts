@@ -6,7 +6,11 @@ import {
 } from "@tanstack/solid-query";
 import { reportKeys } from "../query-keys";
 import { reportsApi } from "@/api/reports";
-import { PerformanceEntry, ReportDetail } from "@/types/reports";
+import {
+  ImportAccepted,
+  PerformanceEntry,
+  ReportDetail,
+} from "@/types/reports";
 
 export const reportListOptions = (page: () => number) =>
   queryOptions({
@@ -75,8 +79,17 @@ export function useImportReport() {
   const qc = useQueryClient();
   return useMutation(() => ({
     mutationFn: (code: string) => reportsApi.import(code),
-    onSuccess: () => {
+    onSuccess: (data: ImportAccepted) => {
       qc.invalidateQueries({ queryKey: reportKeys.lists() });
+      qc.invalidateQueries({ queryKey: reportKeys.detail(data.reportCode) });
     },
   }));
+}
+
+export function useInvalidateReport() {
+  const qc = useQueryClient();
+  return (reportCode: string) => {
+    qc.invalidateQueries({ queryKey: reportKeys.detail(reportCode) });
+    qc.invalidateQueries({ queryKey: reportKeys.lists() });
+  };
 }
