@@ -1,14 +1,17 @@
 import ChangePasswordCard from "@/components/ChangePasswordCard";
 import SectionHeader from "@/components/ui/SectionHeader";
+import WclCredentialsCard from "@/components/WclCredentialsCard";
 import WclOAuthCard from "@/components/WclOAuthCard";
 import { authStore } from "@/stores/auth";
+import { Show } from "solid-js";
 
 const SettingsPage = () => {
+  const isAdmin = () => authStore.user()?.role == "1";
+
   return (
     <div class="flex-1 overflow-y-auto p-8">
       <div class="max-w-2xl space-y-4">
         <SectionHeader label="Sistema" title="Conta & Integrações" />
-        {/* UserInfo - ReadOnly */}
         <div class="card animate-fade-in">
           <p class="label-xs mb-4">Usuário Local</p>
           <dl class="grid grid-cols-2 gap-x-8 gap-y-4">
@@ -38,6 +41,9 @@ const SettingsPage = () => {
           </dl>
         </div>
 
+        <Show when={isAdmin()}>
+          <WclCredentialsCard />
+        </Show>
         <WclOAuthCard />
         <ChangePasswordCard />
       </div>

@@ -36,3 +36,11 @@ export const wclKeys = {
   /** Current WCL OAuth status for the authenticated user. */
   status: () => ["wcl", "status"] as const,
 } as const;
+
+export const adminKeys = {
+  /** Root — matches any admin query. */
+  all: () => ["admin"] as const,
+
+  /** Status das credenciais WCL (ClientId/Secret) — visível apenas para Admin. */
+  wclCredentialsStatus: () => ["admin", "wcl-credentials", "status"] as const,
+} as const;
