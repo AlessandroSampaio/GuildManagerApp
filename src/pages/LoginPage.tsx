@@ -1,7 +1,6 @@
 import LoginFormPanel from "@/components/forms/LoginFormPanel";
-import { Component, createSignal, Show } from "solid-js";
+import { Component } from "solid-js";
 
-// Decorative rune corner SVG
 const RuneCorner: Component<{ class?: string }> = (p) => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class={p.class}>
     <path d="M1 10 V1 H10" stroke="#c8741c" stroke-width="1" opacity="0.6" />
@@ -10,8 +9,6 @@ const RuneCorner: Component<{ class?: string }> = (p) => (
 );
 
 const LoginPage: Component = () => {
-  const [mode, setMode] = createSignal<"login" | "register">("login");
-
   return (
     <div class="flex-1 flex items-center justify-center relative overflow-hidden bg-void-900">
       {/* Background grid */}
@@ -75,34 +72,8 @@ const LoginPage: Component = () => {
             </p>
           </div>
 
-          {/* Mode tabs */}
-          <div class="flex border-b border-void-700" role="tablist">
-            {(["login", "register"] as const).map((m) => (
-              <button
-                role="tab"
-                aria-selected={mode() === m}
-                onClick={() => setMode(m)}
-                class={`flex-1 py-3 font-body font-bold text-xs tracking-[0.18em] uppercase
-                            transition-all duration-200
-                            ${
-                              mode() === m
-                                ? "text-ember-600 border-b-2 border-ember-700 -mb-px bg-forge-900/30"
-                                : "text-stone-600 hover:text-stone-300 hover:bg-void-700"
-                            }`}
-              >
-                {m === "login" ? "Entrar" : "Criar Conta"}
-              </button>
-            ))}
-          </div>
-
-          {/*
-              Show/fallback causes full unmount+remount on mode change,
-              which resets each FormStore independently — intentional.
-          */}
           <div role="tabpanel">
-            <Show when={mode() === "login"} fallback={<p>Register Form</p>}>
-              <LoginFormPanel />
-            </Show>
+            <LoginFormPanel />
           </div>
         </div>
 
