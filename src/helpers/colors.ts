@@ -35,3 +35,14 @@ const TEXT_CLASS_COLORS: Record<string, string> = {
 export function classColor(cls: string) {
   return TEXT_CLASS_COLORS[cls.replace(/\s/g, "")] ?? "text-stone-400";
 }
+
+export function tierBadgeClass(points: number | null) {
+  if (points === null) return "text-stone-600 bg-void-800 border-void-600";
+  if (points >= 100)
+    return "text-amber-300 bg-amber-950/40 border-amber-800/60";
+  if (points >= 75) return "text-amber-400 bg-amber-950/30 border-amber-900/50";
+  if (points >= 50)
+    return "text-emerald-400 bg-emerald-950/30 border-emerald-900/50";
+  if (points >= 25) return "text-blue-400 bg-blue-950/30 border-blue-900/50";
+  return "text-stone-500 bg-void-800/50 border-void-700";
+}

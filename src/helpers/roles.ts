@@ -10,3 +10,10 @@ export function roleClass(role: string) {
       return "tag-neutral";
   }
 }
+
+export function roleIcon(role: string) {
+  const r = role.toLowerCase();
+  if (r === "tank") return "🛡";
+  if (r === "healer") return "💚";
+  return "⚔";
+}

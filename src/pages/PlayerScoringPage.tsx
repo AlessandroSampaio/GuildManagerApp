@@ -1,0 +1,238 @@
+import { ApiError } from "@/api/client";
+import { playerScoringApi } from "@/api/player-scoring";
+import { PlayerCard } from "@/components/PlayerCard";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ErrorBanner } from "@/components/ui/ErrorBanner";
+import SectionHeader from "@/components/ui/SectionHeader";
+import { Spinner } from "@/components/ui/Spinner";
+import { fmtDate } from "@/helpers";
+import { tierBadgeClass } from "@/helpers/colors";
+import { PlayerScoringResult } from "@/types/player-scoring";
+import { useNavigate, useParams } from "@solidjs/router";
+import { Component, createSignal, For, onMount, Show } from "solid-js";
+
+const PlayerScoringPage: Component = () => {
+  const params = useParams<{ weekId: string }>();
+  const nav = useNavigate();
+
+  const [result, setResult] = createSignal<PlayerScoringResult | null>(null);
+  const [loading, setLoading] = createSignal(false);
+  const [error, setError] = createSignal<string | null>(null);
+  const [showReports, setShowReports] = createSignal(false);
+
+  const weekId = () => parseInt(params.weekId, 10);
+  const week = () => result()?.raidWeek;
+
+  async function calculate() {
+    setLoading(true);
+    setError(null);
+    try {
+      const r = await playerScoringApi.calculateByWeek(weekId());
+      setResult(r);
+    } catch (err) {
+      setError(
+        err instanceof ApiError ? err.message : "Falha ao calcular pontuação.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  onMount(() => {
+    if (!Number.isNaN(weekId())) {
+      calculate();
+    }
+  });
+
+  return (
+    <div class="flex-1 overflow-y-auto p-8">
+      <div class="max-w-4xl space-y-6">
+        <div class="flex items-start justify-between">
+          <div>
+            <button
+              onClick={() => nav("/app/raid-weeks")}
+              class="flex items-center gap-1.5 text-stone-600 hover:text-stone-300 font-mono text-xs mb-3 transition-colors"
+            >
+              <svg
+                width="11"
+                height="11"
+                viewBox="0 0 11 11"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  d="M7 2L3 5.5l4 3.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Semanas de Raid
+            </button>
+            <SectionHeader
+              label="Pontuação"
+              title={week() ? week()!.label : "Calculando…"}
+            />
+            <Show when={week()}>
+              <p class="font-mono text-[11px] text-stone-600 -mt-4">
+                {fmtDate(new Date(week()!.startsAt).toDateString())} &rarr;{" "}
+                {fmtDate(new Date(week()!.endsAt).toDateString())}
+              </p>
+            </Show>
+          </div>
+
+          <button
+            onClick={calculate}
+            disabled={loading()}
+            class="btn-ghost text-xs py-1.5 px-4 flex items-center gap-2 mt-6"
+            title="Recalcular"
+          >
+            <Show when={loading()}>
+              <Spinner size={12} />
+            </Show>
+            <Show when={!loading()}>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path d="M10 6A4 4 0 112 6" stroke-linecap="round" />
+                <path
+                  d="M10 3v3h-3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </Show>
+            {loading() ? "Calculando..." : "Recalcular"}
+          </button>
+        </div>
+
+        <Show when={loading() && !result()}>
+          <div class="flex items-center gap-3 text-stone-500 font-mono text-xs py-6">
+            <Spinner size={16} />
+            Calculando pontuação dos players…
+          </div>
+        </Show>
+
+        <Show when={error()}>
+          <ErrorBanner message={error()!} />
+        </Show>
+
+        <Show when={result()}>
+          {/* Summary bar */}
+          <div class="grid grid-cols-4 gap-3">
+            {(
+              [
+                ["Players", result()!.players.length.toString()],
+                [
+                  "Reports avaliados",
+                  result()!
+                    .reports.filter((r) => r.includedInScoring)
+                    .length.toString(),
+                ],
+                [
+                  "Entries avaliadas",
+                  result()!.totalEntriesEvaluated.toString(),
+                ],
+                [
+                  "Sem ranking WCL",
+                  result()!.entriesWithoutRankPercent.toString(),
+                ],
+              ] as [string, string][]
+            ).map(([k, v]) => (
+              <div class="bg-void-800/40 border border-void-700 px-4 py-3">
+                <p class="label-xs mb-1">{k}</p>
+                <p class="font-mono text-xl font-bold text-stone-100">{v}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Scoring settings snapshot */}
+          <div class="flex items-center gap-3">
+            <p class="label-xs">Configuração de scoring usada:</p>
+            <div class="flex gap-2 flex-wrap">
+              <For
+                each={result()!.scoringSettings.tiers.sort(
+                  (a, b) => b.minPercent - a.minPercent,
+                )}
+              >
+                {(t) => (
+                  <span
+                    class={`font-mono text-[10px] px-2 py-0.5 border ${tierBadgeClass(t.points)}`}
+                  >
+                    {t.minPercent}–{t.maxPercent}%: {t.points}pts
+                    {t.label ? ` · ${t.label}` : ""}
+                  </span>
+                )}
+              </For>
+            </div>
+          </div>
+
+          {/* No players */}
+          <Show when={result()!.players.length === 0}>
+            <EmptyState
+              title="Nenhum player com pontuação"
+              subtitle="Os reports avaliados não têm PerformanceEntries vinculadas a Players."
+            />
+          </Show>
+
+          {/* Player ranking */}
+          <Show when={result()!.players.length > 0}>
+            <div class="space-y-3">
+              <For each={result()!.players}>
+                {(player, i) => <PlayerCard player={player} rank={i() + 1} />}
+              </For>
+            </div>
+          </Show>
+
+          {/* Reports toggle */}
+          <div>
+            <button
+              onClick={() => setShowReports((v) => !v)}
+              class="flex items-center gap-2 text-xs text-stone-600 hover:text-stone-300 transition-colors font-mono"
+            >
+              <svg
+                width="11"
+                height="11"
+                viewBox="0 0 11 11"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.4"
+                class={`transition-transform ${showReports() ? "rotate-90" : ""}`}
+              >
+                <path
+                  d="M4 2l3 3.5-3 3.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              {showReports() ? "Ocultar" : "Ver"} status dos reports (
+              {result()!.reports.length})
+            </button>
+
+            <Show when={showReports()}>
+              <div class="mt-3 space-y-1 animate-fade-in">
+                <For each={result()!.reports}>
+                  {(r) => (
+                    <ReportStatusBadge
+                      code={r.reportCode}
+                      title={r.title}
+                      status={r.importStatus}
+                      included={r.includedInScoring}
+                    />
+                  )}
+                </For>
+              </div>
+            </Show>
+          </div>
+        </Show>
+      </div>
+    </div>
+  );
+};
+
+export default PlayerScoringPage;

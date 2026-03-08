@@ -19,3 +19,9 @@ export function formatWeekRange(startsAt: string, endsAt: string): string {
     new Date(s).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" });
   return `${fmt(startsAt)} – ${fmt(endsAt)}`;
 }
+
+export function fmtAmount(amount: number, role: string) {
+  const val =
+    amount >= 1000 ? `${(amount / 1000).toFixed(1)}k` : amount.toFixed(0);
+  return role.toLowerCase() === "healer" ? `${val} HPS` : `${val} DPS`;
+}
