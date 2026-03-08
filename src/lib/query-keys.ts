@@ -44,3 +44,13 @@ export const adminKeys = {
   /** Status das credenciais WCL (ClientId/Secret) — visível apenas para Admin. */
   wclCredentialsStatus: () => ["admin", "wcl-credentials", "status"] as const,
 } as const;
+
+export const scoringKeys = {
+  all: () => ["scoring"] as const,
+  settings: () => ["scoring", "settings"] as const,
+} as const;
+
+export const playerScoringKeys = {
+  all: () => ["player-scoring"] as const,
+  byWeek: (id: number) => ["player-scoring", "week", id] as const,
+} as const;

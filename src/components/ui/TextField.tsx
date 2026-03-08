@@ -315,6 +315,65 @@ export function PasswordField<T extends FieldValues, N extends FieldPath<T>>(
   );
 }
 
+export function NumberField<
+  T extends Record<string, unknown>,
+  N extends keyof T & string,
+>(
+  props: FieldComponentProps<T, N> & {
+    min?: number;
+    max?: number;
+    step?: number;
+    placeholder?: string;
+  },
+): JSX.Element {
+  const [local] = splitProps(props, [
+    "field",
+    "fieldProps",
+    "label",
+    "class",
+    "min",
+    "max",
+    "step",
+    "placeholder",
+  ]);
+
+  const error = () => hasError(local.field);
+  const valid = () => isValid(local.field);
+
+  return (
+    <FieldWrapper
+      label={local.label}
+      name={String(local.fieldProps.name)}
+      error={local.field.error}
+      class={local.class}
+    >
+      <div class="relative">
+        <input
+          {...local.fieldProps}
+          id={String(local.fieldProps.name)}
+          type="number"
+          min={local.min}
+          max={local.max}
+          step={local.step ?? 1}
+          placeholder={local.placeholder}
+          value={(local.field.value as number) ?? ""}
+          class={inputClass(error(), valid())}
+          aria-invalid={error()}
+          aria-describedby={
+            error() ? `${String(local.fieldProps.name)}-error` : undefined
+          }
+        />
+        <Show when={valid()}>
+          <ValidIcon />
+        </Show>
+        <Show when={error()}>
+          <ErrorIcon />
+        </Show>
+      </div>
+    </FieldWrapper>
+  );
+}
+
 // ── FormError — server-side error banner ──────────────────────────────────────
 
 export const FormError: Component<{ message: string | null | undefined }> = (

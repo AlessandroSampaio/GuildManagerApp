@@ -43,6 +43,29 @@ const NAV = [
     ),
   },
   {
+    href: "/app/scoring",
+    label: "Pontuação",
+    icon: (active: boolean) => (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 15 15"
+        fill="none"
+        stroke={active ? "#c8741c" : "currentColor"}
+        stroke-width="1.2"
+      >
+        <path d="M2 12l3-4 2.5 2 3-5 2.5 3" />
+        <circle
+          cx="13"
+          cy="3"
+          r="1.5"
+          fill={active ? "#c8741c" : "none"}
+          stroke={active ? "#c8741c" : "currentColor"}
+        />
+      </svg>
+    ),
+  },
+  {
     href: "/app/settings",
     label: "Configurações",
     icon: (active: boolean) => (
