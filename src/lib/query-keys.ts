@@ -62,3 +62,11 @@ export const playerKeys = {
   details: () => ["players", "detail"] as const,
   detail: (id: number) => ["players", "detail", id] as const,
 } as const;
+
+export const raidWeekKeys = {
+  all: () => ["raid-weeks"] as const,
+  lists: () => ["raid-weeks", "list"] as const,
+  list: (page: number) => ["raid-weeks", "list", page] as const,
+  details: () => ["raid-weeks", "detail"] as const,
+  detail: (id: number) => ["raid-weeks", "detail", id] as const,
+} as const;
