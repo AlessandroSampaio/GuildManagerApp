@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { Spinner } from "@/components/ui/Spinner";
+import { fmtDate } from "@/helpers/colors";
 import {
   useDeleteScoringSettings,
   useScoringSettings,
@@ -136,17 +137,7 @@ const ScoringPage: Component = () => {
               <div class="flex items-center justify-between">
                 <p class="label-xs">Configuração Ativa</p>
                 <span class="font-mono text-[10px] text-stone-600">
-                  Atualizado em{" "}
-                  {new Date(settingsQ.data!.updatedAt).toLocaleDateString(
-                    "pt-BR",
-                    {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    },
-                  )}
+                  Atualizado em {fmtDate(settingsQ.data!.updatedAt)}
                 </span>
               </div>
 

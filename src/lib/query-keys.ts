@@ -54,3 +54,11 @@ export const playerScoringKeys = {
   all: () => ["player-scoring"] as const,
   byWeek: (id: number) => ["player-scoring", "week", id] as const,
 } as const;
+
+export const playerKeys = {
+  all: () => ["players"] as const,
+  lists: () => ["players", "list"] as const,
+  list: (page: number) => ["players", "list", page] as const,
+  details: () => ["players", "detail"] as const,
+  detail: (id: number) => ["players", "detail", id] as const,
+} as const;

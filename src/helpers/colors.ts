@@ -15,3 +15,31 @@ export function tierBarColor(points: number): string {
   if (points >= 25) return "bg-blue-400";
   return "bg-stone-500";
 }
+
+const TEXT_CLASS_COLORS: Record<string, string> = {
+  DeathKnight: "text-red-400",
+  DemonHunter: "text-purple-400",
+  Druid: "text-orange-400",
+  Evoker: "text-teal-400",
+  Hunter: "text-lime-400",
+  Mage: "text-sky-300",
+  Monk: "text-emerald-400",
+  Paladin: "text-amber-300",
+  Priest: "text-stone-100",
+  Rogue: "text-yellow-400",
+  Shaman: "text-blue-400",
+  Warlock: "text-violet-400",
+  Warrior: "text-orange-300",
+};
+
+export function classColor(cls: string) {
+  return TEXT_CLASS_COLORS[cls.replace(/\s/g, "")] ?? "text-stone-400";
+}
+
+export function fmtDate(iso: string) {
+  return new Date(iso).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
