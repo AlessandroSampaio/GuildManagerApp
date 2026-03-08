@@ -35,11 +35,3 @@ const TEXT_CLASS_COLORS: Record<string, string> = {
 export function classColor(cls: string) {
   return TEXT_CLASS_COLORS[cls.replace(/\s/g, "")] ?? "text-stone-400";
 }
-
-export function fmtDate(iso: string) {
-  return new Date(iso).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
