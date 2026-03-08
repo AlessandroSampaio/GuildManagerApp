@@ -15,6 +15,7 @@ const ReportsPage = lazy(() => import("@/pages/ReportsPage"));
 const ReportDetailPage = lazy(() => import("@/pages/ReportDetailPage"));
 const ScoringPage = lazy(() => import("@/pages/ScoringPage"));
 const PlayersPage = lazy(() => import("@/pages/PlayersPage"));
+const RaidWeeksPage = lazy(() => import("@/pages/RaidWeeksPage"));
 
 const RootRedirect: Component = () => {
   const nav = useNavigate();
@@ -57,7 +58,7 @@ const App: Component = () => (
         <Route path="/reports/:code" component={ReportDetailPage} />
         <Route path="/scoring" component={ScoringPage} />
         <Route path="/players" component={PlayersPage} />
-        {/*<Route path="/player-scoring/:weekId" component={PlayerScoringPage} />*/}
+        <Route path="/raid-weeks" component={RaidWeeksPage} />
         <Route path="/settings" component={SettingsPage} />
       </Route>
     </HashRouter>

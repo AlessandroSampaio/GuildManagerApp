@@ -62,6 +62,27 @@ const NAV = [
     ),
   },
   {
+    href: "/app/raid-weeks",
+    label: "Semanas",
+    icon: (active: boolean) => (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 15 15"
+        fill="none"
+        stroke={active ? "#c8741c" : "currentColor"}
+        stroke-width="1.2"
+      >
+        <rect x="1.5" y="2.5" width="12" height="11" rx="0.5" />
+        <line x1="1.5" y1="6" x2="13.5" y2="6" />
+        <line x1="5" y1="1" x2="5" y2="4" />
+        <line x1="10" y1="1" x2="10" y2="4" />
+        <line x1="4.5" y1="9" x2="6.5" y2="9" />
+        <line x1="8.5" y1="9" x2="10.5" y2="9" />
+      </svg>
+    ),
+  },
+  {
     href: "/app/scoring",
     label: "Pontuação",
     icon: (active: boolean) => (
