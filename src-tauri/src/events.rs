@@ -9,3 +9,9 @@ pub trait AppEventsApi {
     #[taurpc(event)]
     async fn wcl_auth_cancelled();
 }
+
+#[derive(Clone)]
+pub struct AppEventsApiImpl;
+
+#[taurpc::resolvers]
+impl AppEventsApi for AppEventsApiImpl {}

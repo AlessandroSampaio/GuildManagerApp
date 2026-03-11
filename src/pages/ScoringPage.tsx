@@ -1,13 +1,12 @@
 import { ActiveTiersDisplay } from "@/components/ActiveTiersDisplay";
 import { ScoreTester } from "@/components/ScoreTester";
 import { TierEditor } from "@/components/TierEditor";
-import { TierRow } from "@/components/TierRow";
 import { ConfirmDeleteDialog } from "@/components/ui/ConfirmDeleteDialog";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { Spinner } from "@/components/ui/Spinner";
-import { fmtDate } from "@/helpers/colors";
+import { fmtDate } from "@/helpers";
 import {
   useDeleteScoringSettings,
   useScoringSettings,
@@ -15,7 +14,7 @@ import {
 import { ScoringTiersForm } from "@/schemas/scoringTierSchema";
 import { authStore } from "@/stores/auth";
 import { DEFAULT_TIERS } from "@/types/scoring";
-import { Component, createSignal, For, Show } from "solid-js";
+import { Component, createSignal, Show } from "solid-js";
 
 const ScoringPage: Component = () => {
   const isAdmin = () => authStore.user()?.role?.toUpperCase() === "ADMIN";

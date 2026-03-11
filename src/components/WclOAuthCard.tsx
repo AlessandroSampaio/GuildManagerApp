@@ -19,6 +19,7 @@ async function runWclOAuthFlow(
     let settled = false;
 
     function settle(r: "authorized" | "cancelled" | "error") {
+      console.log(`settle : ${r}`);
       if (settled) return;
       settled = true;
       unlistenComplete?.();
@@ -26,10 +27,14 @@ async function runWclOAuthFlow(
       resolve(r);
     }
 
-    unlistenComplete = await listenWclAuthComplete((ok) =>
-      settle(ok ? "authorized" : "error"),
-    );
-    unlistenCancelled = await listenWclAuthCancelled(() => settle("cancelled"));
+    unlistenComplete = await listenWclAuthComplete((ok) => {
+      console.log(`listenWclAuthComplete : ${ok}`);
+      settle(ok ? "authorized" : "error");
+    });
+    unlistenCancelled = await listenWclAuthCancelled(() => {
+      console.log(`listenWclAuthCancelled`);
+      settle("cancelled");
+    });
 
     const result = await wclAuthIpc.open_auth_window(authorizeUrl);
     if (!result.opened) {

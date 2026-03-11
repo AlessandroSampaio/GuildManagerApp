@@ -2,6 +2,7 @@ mod events;
 mod wcl_auth;
 mod window;
 
+use events::{AppEventsApi, AppEventsApiImpl};
 use std::sync::Arc;
 use tauri::AppHandle;
 use taurpc::Router;
@@ -24,13 +25,16 @@ pub fn run() {
     // into a shared slot inside setup() before any IPC call arrives.
     let app_slot: Arc<Mutex<Option<AppHandle>>> = Arc::new(Mutex::new(None));
 
-    let router = Router::new().merge(WindowApiImpl.into_handler()).merge(
-        WclAuthApiImpl {
-            app_slot: app_slot.clone(),
-            state: state.clone(),
-        }
-        .into_handler(),
-    );
+    let router = Router::new()
+        .merge(AppEventsApiImpl.into_handler())
+        .merge(WindowApiImpl.into_handler())
+        .merge(
+            WclAuthApiImpl {
+                app_slot: app_slot.clone(),
+                state: state.clone(),
+            }
+            .into_handler(),
+        );
 
     let app_slot_setup = app_slot.clone();
 

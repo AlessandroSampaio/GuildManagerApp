@@ -6,7 +6,7 @@ import { authStore } from "@/stores/auth";
 import { Show } from "solid-js";
 
 const SettingsPage = () => {
-  const isAdmin = () => authStore.user()?.role == "1";
+  const isAdmin = () => authStore.user()?.role?.toUpperCase() === "ADMIN";
 
   return (
     <div class="flex-1 overflow-y-auto p-8">
