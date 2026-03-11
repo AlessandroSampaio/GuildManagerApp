@@ -16,6 +16,22 @@ export function tierBarColor(points: number): string {
   return "bg-stone-500";
 }
 
+const BACKGROUND_CLASS_COLORS: Record<string, string> = {
+  DeathKnight: "bg-red-400",
+  DemonHunter: "bg-purple-400",
+  Druid: "bg-orange-400",
+  Evoker: "bg-teal-400",
+  Hunter: "bg-lime-400",
+  Mage: "bg-sky-300",
+  Monk: "bg-emerald-400",
+  Paladin: "bg-amber-300",
+  Priest: "bg-stone-300",
+  Rogue: "bg-yellow-400",
+  Shaman: "bg-blue-400",
+  Warlock: "bg-violet-400",
+  Warrior: "bg-orange-300",
+};
+
 const TEXT_CLASS_COLORS: Record<string, string> = {
   DeathKnight: "text-red-400",
   DemonHunter: "text-purple-400",
@@ -31,6 +47,10 @@ const TEXT_CLASS_COLORS: Record<string, string> = {
   Warlock: "text-violet-400",
   Warrior: "text-orange-300",
 };
+
+export function backgroundClassColor(cls: string) {
+  return BACKGROUND_CLASS_COLORS[cls.replace(/\s/g, "")] ?? "bg-stone-500";
+}
 
 export function classColor(cls: string) {
   return TEXT_CLASS_COLORS[cls.replace(/\s/g, "")] ?? "text-stone-400";

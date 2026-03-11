@@ -14,6 +14,7 @@ import { fmtDate } from "@/helpers";
 import { Spinner } from "./ui/Spinner";
 import { CharacterRow } from "./CharacterRow";
 import { AddCharacterForm } from "./forms/AddCharacterForm";
+import { CharacterSearchPicker } from "./CharacterSearchPicker";
 
 export const PlayerPanel: Component<{
   playerId: number;
@@ -57,6 +58,9 @@ export const PlayerPanel: Component<{
       { onSettled: () => setRemovingId(null) },
     );
   }
+
+  const linkedIds = () =>
+    new Set((detail.data?.characters ?? []).map((c) => c.id));
 
   return (
     <div class="flex flex-col h-full overflow-y-auto">
@@ -232,8 +236,11 @@ export const PlayerPanel: Component<{
             </Show>
           </div>
 
-          <div class="relative">
-            <AddCharacterForm playerId={props.playerId} />
+          <div class="pt-1 border-t border-void-700">
+            <CharacterSearchPicker
+              playerId={props.playerId}
+              linkedIds={linkedIds()}
+            />
           </div>
         </div>
       </Show>

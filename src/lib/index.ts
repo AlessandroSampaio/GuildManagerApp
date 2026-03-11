@@ -16,3 +16,4 @@ export {
 } from "./queries/report";
 export { useChangePassword } from "./queries/auth";
 export { useSaveWclCredentials, useWclCredentialStatus } from "./queries/admin";
+export { useCharacterSearch } from "./queries/character";

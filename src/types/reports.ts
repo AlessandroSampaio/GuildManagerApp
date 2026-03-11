@@ -1,4 +1,4 @@
-import { Guild } from "./wcl-common";
+import { Guild } from "./guild";
 
 export interface Report {
   id: string;

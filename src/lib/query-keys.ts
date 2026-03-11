@@ -70,3 +70,8 @@ export const raidWeekKeys = {
   details: () => ["raid-weeks", "detail"] as const,
   detail: (id: number) => ["raid-weeks", "detail", id] as const,
 } as const;
+
+export const characterKeys = {
+  all: () => ["characters"] as const,
+  search: (q: string, cls: string) => ["characters", "search", q, cls] as const,
+} as const;
