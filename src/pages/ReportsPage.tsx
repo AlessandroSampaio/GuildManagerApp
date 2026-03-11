@@ -2,17 +2,10 @@ import ImportReportModal from "@/components/ImportReportModal";
 import { EmptyState } from "@/components/ui/EmptyState";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { SkeletonList } from "@/components/ui/Skeleton";
+import { fmtDate } from "@/helpers";
 import { useReportList } from "@/lib";
 import { A } from "@solidjs/router";
 import { Component, createSignal, For, Show } from "solid-js";
-
-function fmtDate(iso: string) {
-  return new Date(iso).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 const ReportsPage: Component = () => {
   const [showModal, setShowModal] = createSignal(false);

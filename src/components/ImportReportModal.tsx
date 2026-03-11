@@ -24,7 +24,7 @@ const ImportReportModal: Component<{
   const [reportCode, setReportCode] = createSignal("");
   const [submitError, setSubmitError] = createSignal<string | null>(null);
 
-  const [form, { Form, Field }] = createForm<ImportReportForm>({
+  const [_, { Form, Field }] = createForm<ImportReportForm>({
     validate: zodForm(importReportSchema),
   });
 
@@ -70,13 +70,6 @@ const ImportReportModal: Component<{
     setSubmitError(null);
     setReportCode("");
   };
-
-  const serverError = () =>
-    importMutation.isError
-      ? importMutation.error instanceof ApiError
-        ? importMutation.error.message
-        : "Falha ao importar o report."
-      : null;
 
   return (
     <div
