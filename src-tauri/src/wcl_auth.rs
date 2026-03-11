@@ -73,7 +73,7 @@ impl WclAuthApi for WclAuthApiImpl {
             }
         };
 
-        match tauri::WebviewWindowBuilder::new(
+        let win = match tauri::WebviewWindowBuilder::new(
             &app,
             "wcl-oauth",
             tauri::WebviewUrl::External(parsed),
@@ -86,32 +86,58 @@ impl WclAuthApi for WclAuthApiImpl {
         .always_on_top(true)
         .build()
         {
-            Ok(_) => {
-                *self.state.wcl_window_open.lock().await = true;
-                WclWindowResult {
-                    opened: true,
-                    message: "Window opened successfully.".into(),
+            Ok(w) => w,
+            Err(e) => {
+                return WclWindowResult {
+                    opened: false,
+                    message: format!("Falha ao abrir janela: {e}"),
                 }
             }
-            Err(e) => WclWindowResult {
-                opened: false,
-                message: format!("Fail to open window: {e}"),
-            },
-        }
+        };
+
+        *self.state.wcl_window_open.lock().await = true;
+
+        let state_ref = self.state.clone();
+        let app_ref = app.clone();
+
+        win.on_window_event(move |event| {
+            if !matches!(event, tauri::WindowEvent::Destroyed) {
+                return;
+            }
+
+            // `blocking_lock` is acceptable here: this closure runs on Tauri's
+            // event-loop thread and the critical section is a single flag read.
+            let mut open = state_ref.wcl_window_open.try_lock().unwrap();
+            if !*open {
+                // Flag already cleared by notify_auth_complete() — window was
+                // closed as part of a successful auth flow. Nothing to emit.
+                return;
+            }
+
+            // Flag still set → user closed the window manually before the
+            // OAuth callback page could call notify_auth_complete().
+            *open = false;
+            drop(open); // release before emitting
+
+            let trigger = AppEventTrigger::new(app_ref.clone());
+            let _ = trigger.wcl_auth_cancelled();
+        });
+
+        return WclWindowResult {
+            opened: true,
+            message: "Janela WarcraftLogs aberta.".into(),
+        };
     }
 
     async fn notify_auth_complete(self) {
         let app = self.app().await;
 
-        // Close OAuth windows
+        *self.state.wcl_window_open.lock().await = false;
+
         if let Some(win) = app.get_webview_window("wcl-oauth") {
             let _ = win.close();
         }
 
-        // Update inner status
-        *self.state.wcl_window_open.lock().await = false;
-
-        // Emit typed event to the main window via TauRPC event trigger
         let trigger = AppEventTrigger::new(app);
         let _ = trigger.wcl_auth_complete(true);
     }
@@ -119,10 +145,11 @@ impl WclAuthApi for WclAuthApiImpl {
     async fn close_auth_window(self) {
         let app = self.app().await;
 
+        *self.state.wcl_window_open.lock().await = false;
+
         if let Some(win) = app.get_webview_window("wcl-oauth") {
             let _ = win.close();
         }
-        *self.state.wcl_window_open.lock().await = false;
     }
 
     async fn is_auth_window_open(self) -> bool {

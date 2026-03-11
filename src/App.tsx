@@ -17,6 +17,7 @@ const ScoringPage = lazy(() => import("@/pages/ScoringPage"));
 const PlayersPage = lazy(() => import("@/pages/PlayersPage"));
 const RaidWeeksPage = lazy(() => import("@/pages/RaidWeeksPage"));
 const PlayerScoringPage = lazy(() => import("@/pages/PlayerScoringPage"));
+const WclCallbackPage = lazy(() => import("@/pages/WclCallbackPage"));
 
 const RootRedirect: Component = () => {
   const nav = useNavigate();
@@ -46,6 +47,7 @@ const App: Component = () => (
     <HashRouter>
       <Route path="/" component={RootRedirect} />
       <Route path={"/login"} component={LoginShell} />
+      <Route path="/wcl-callback" component={WclCallbackPage} />
       <Route
         path="/app"
         component={(props) => (

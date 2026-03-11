@@ -55,16 +55,18 @@ export const wclAuthIpc: WclAuthApiProxy = proxy.wcl_auth;
 // Events are emitted by Rust via `AppEventsTrigger` and listened to here.
 // The event names follow TauRPC's convention: "events.{method_name}"
 
-import { listen, type UnlistenFn } from "@tauri-apps/api/event";
+import { type UnlistenFn } from "@tauri-apps/api/event";
 
 /** Fired when the WCL OAuth callback was processed. `success = true` means a token was stored. */
 export function listenWclAuthComplete(
   cb: (success: boolean) => void,
 ): Promise<UnlistenFn> {
-  return listen<boolean>("wcl_auth_complete", (e) => cb(e.payload));
+  return proxy.events.wcl_auth_complete.on((e) => cb(e));
+  // return listen<boolean>("wcl_auth_complete", (e) => cb(e.payload));
 }
 
 /** Fired when the user closes the OAuth window before completing authorisation. */
 export function listenWclAuthCancelled(cb: () => void): Promise<UnlistenFn> {
-  return listen("wcl_auth_cancelled", () => cb());
+  return proxy.events.wcl_auth_cancelled.on(() => cb());
+  // return listen("wcl_auth_cancelled", () => cb());
 }

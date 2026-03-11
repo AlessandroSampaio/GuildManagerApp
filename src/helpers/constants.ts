@@ -3,5 +3,7 @@ export const DIFF: Record<number, string> = {
   4: "Heroic",
   5: "Mythic",
 };
+export const DELAY_SUCCESS = 3;
+export const DELAY_FAILURE = 5;
 
 export const diffLabel = (d: number) => DIFF[d] ?? `Diff ${d}`;
