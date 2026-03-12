@@ -3,10 +3,12 @@ import { playerScoringApi } from "@/api/player-scoring";
 import { PlayerCard } from "@/components/PlayerCard";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
+import { ReportStatusBadge } from "@/components/ui/ReportStatusBadge";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { Spinner } from "@/components/ui/Spinner";
 import { fmtDate } from "@/helpers";
 import { tierBadgeClass } from "@/helpers/colors";
+import { exportRaidWeekXlsx } from "@/lib/export-xlsx";
 import { PlayerScoringResult } from "@/types/player-scoring";
 import { useNavigate, useParams } from "@solidjs/router";
 import { Component, createSignal, For, onMount, Show } from "solid-js";
@@ -19,6 +21,8 @@ const PlayerScoringPage: Component = () => {
   const [loading, setLoading] = createSignal(false);
   const [error, setError] = createSignal<string | null>(null);
   const [showReports, setShowReports] = createSignal(false);
+  const [exporting, setExporting] = createSignal(false);
+  const [exportError, setExportError] = createSignal<string | null>(null);
 
   const weekId = () => parseInt(params.weekId, 10);
   const week = () => result()?.raidWeek;
@@ -81,34 +85,87 @@ const PlayerScoringPage: Component = () => {
             </Show>
           </div>
 
-          <button
-            onClick={calculate}
-            disabled={loading()}
-            class="btn-ghost text-xs py-1.5 px-4 flex items-center gap-2 mt-6"
-            title="Recalcular"
-          >
-            <Show when={loading()}>
-              <Spinner size={12} />
-            </Show>
-            <Show when={!loading()}>
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.5"
+          <div class="flex items-center gap-2 mt-6">
+            <Show when={result()}>
+              <button
+                onClick={async () => {
+                  setExporting(true);
+                  setExportError(null);
+                  try {
+                    await exportRaidWeekXlsx(
+                      result()!,
+                      week()?.label ?? "raidweek",
+                    );
+                  } catch (e) {
+                    setExportError(e instanceof Error ? e.message : String(e));
+                  } finally {
+                    setExporting(false);
+                  }
+                }}
+                disabled={exporting()}
+                class="btn-ghost text-xs py-1.5 px-4 flex items-center gap-2"
+                title="Exportar XLSX"
               >
-                <path d="M10 6A4 4 0 112 6" stroke-linecap="round" />
-                <path
-                  d="M10 3v3h-3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+                <Show
+                  when={exporting()}
+                  fallback={
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                    >
+                      <path
+                        d="M6 1v7M3 5l3 3 3-3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <path d="M2 10h8" stroke-linecap="round" />
+                    </svg>
+                  }
+                >
+                  <Spinner size={12} />
+                </Show>
+                {exporting() ? "Exportando..." : "Exportar XLSX"}
+              </button>
+
+              <Show when={exportError()}>
+                <p class="font-mono text-[10px] text-red-400 max-w-[200px] text-right">
+                  {exportError()}
+                </p>
+              </Show>
             </Show>
-            {loading() ? "Calculando..." : "Recalcular"}
-          </button>
+            <button
+              onClick={calculate}
+              disabled={loading()}
+              class="btn-ghost text-xs py-1.5 px-4 flex items-center gap-2"
+              title="Recalcular"
+            >
+              <Show when={loading()}>
+                <Spinner size={12} />
+              </Show>
+              <Show when={!loading()}>
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path d="M10 6A4 4 0 112 6" stroke-linecap="round" />
+                  <path
+                    d="M10 3v3h-3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </Show>
+              {loading() ? "Calculando..." : "Recalcular"}
+            </button>
+          </div>
         </div>
 
         <Show when={loading() && !result()}>

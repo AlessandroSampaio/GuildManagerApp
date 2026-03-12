@@ -6,9 +6,11 @@ type TAURI_CHANNEL<T> = (response: T) => void
 
 export type WclWindowResult = { opened: boolean; message: string }
 
-const ARGS_MAP = { 'events':'{"wcl_auth_cancelled":[],"wcl_auth_complete":["success"]}', 'wcl_auth':'{"close_auth_window":[],"is_auth_window_open":[],"notify_auth_complete":[],"open_auth_window":["url"]}', 'window':'{"close":[],"is_maximized":[],"minimize":[],"toggle_maximize":[]}' }
+const ARGS_MAP = { 'events':'{"wcl_auth_cancelled":[],"wcl_auth_complete":["success"]}', 'file_ops':'{"get_download_dir":[],"save_bytes":["path","data"]}', 'wcl_auth':'{"close_auth_window":[],"is_auth_window_open":[],"notify_auth_complete":[],"open_auth_window":["url"]}', 'window':'{"close":[],"is_maximized":[],"minimize":[],"toggle_maximize":[]}' }
 export type Router = { "events": {wcl_auth_cancelled: () => Promise<void>, 
 wcl_auth_complete: (success: boolean) => Promise<void>},
+"file_ops": {get_download_dir: () => Promise<string>, 
+save_bytes: (path: string, data: number[]) => Promise<null>},
 "wcl_auth": {close_auth_window: () => Promise<void>, 
 is_auth_window_open: () => Promise<boolean>, 
 notify_auth_complete: () => Promise<void>, 

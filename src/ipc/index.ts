@@ -36,6 +36,13 @@ interface WclAuthApiProxy {
   is_auth_window_open(): Promise<boolean>;
 }
 
+interface FileOpsApiProxy {
+  /** Returns the user's Downloads folder path. */
+  get_download_dir(): Promise<string>;
+  /** Writes `data` bytes to the absolute `path` on disk. */
+  save_bytes(path: string, data: number[]): Promise<null>;
+}
+
 // ── Create proxies with TauRPC (path maps to Rust trait path attribute) ───────
 const proxy = createTauRPCProxy();
 
@@ -50,6 +57,12 @@ export const windowIpc: WindowApiProxy = proxy.window;
  * Maps to `WclAuthApi` (path = "wcl_auth") in Rust.
  */
 export const wclAuthIpc: WclAuthApiProxy = proxy.wcl_auth;
+
+/**
+ * File-system utilities (write bytes to disk, resolve known directories).
+ * Maps to `FileOpsApi` (path = "file_ops") in Rust.
+ */
+export const fileOpsIpc: FileOpsApiProxy = proxy.file_ops;
 
 // ── Event listeners (AppEventsApi outbound events) ───────────────────────────
 // Events are emitted by Rust via `AppEventsTrigger` and listened to here.

@@ -1,8 +1,10 @@
 mod events;
+mod file_ops;
 mod wcl_auth;
 mod window;
 
 use events::{AppEventsApi, AppEventsApiImpl};
+use file_ops::{FileOpsApi, FileOpsApiImpl};
 use std::sync::Arc;
 use tauri::AppHandle;
 use taurpc::Router;
@@ -26,6 +28,12 @@ pub fn run() {
     let app_slot: Arc<Mutex<Option<AppHandle>>> = Arc::new(Mutex::new(None));
 
     let router = Router::new()
+        .merge(
+            FileOpsApiImpl {
+                app_slot: app_slot.clone(),
+            }
+            .into_handler(),
+        )
         .merge(AppEventsApiImpl.into_handler())
         .merge(WindowApiImpl.into_handler())
         .merge(
