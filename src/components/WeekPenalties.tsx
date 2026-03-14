@@ -46,7 +46,9 @@ export const WeekPenalties: Component<{ weekId: number }> = (props) => {
         },
         onError: (err) =>
           setError(
-            err instanceof ApiError ? err.message : "Falha ao aplicar penalidade.",
+            err instanceof ApiError
+              ? err.message
+              : "Falha ao aplicar penalidade.",
           ),
       },
     );
@@ -65,6 +67,84 @@ export const WeekPenalties: Component<{ weekId: number }> = (props) => {
   return (
     <div class="card space-y-4">
       <p class="label-xs">Penalidades</p>
+
+      {/* Add form — admin only */}
+      <Show when={isAdmin()}>
+        <div class="space-y-2 pt-1 border-t border-void-700">
+          <p class="font-mono text-[10px] text-stone-600 uppercase tracking-wider">
+            Aplicar penalidade
+          </p>
+
+          <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {/* Player select */}
+            <select
+              value={playerId() ?? ""}
+              onChange={(e) =>
+                setPlayerId(
+                  e.currentTarget.value ? Number(e.currentTarget.value) : null,
+                )
+              }
+              class="bg-void-800 border border-void-600 px-3 py-2 font-mono text-xs text-stone-200 focus:outline-none focus:border-ember-700 transition-colors"
+            >
+              <option value="">Selecionar player…</option>
+              <Show when={playersQ.isLoading}>
+                <option disabled>Carregando…</option>
+              </Show>
+              <For each={playersQ.data?.data}>
+                {(player) => <option value={player.id}>{player.name}</option>}
+              </For>
+            </select>
+
+            {/* Penalty event select */}
+            <select
+              value={penaltyEventId() ?? ""}
+              onChange={(e) =>
+                setPenaltyEventId(
+                  e.currentTarget.value ? Number(e.currentTarget.value) : null,
+                )
+              }
+              class="bg-void-800 border border-void-600 px-3 py-2 font-mono text-xs text-stone-200 focus:outline-none focus:border-ember-700 transition-colors"
+            >
+              <option value="">Tipo de penalidade…</option>
+              <Show when={eventsQ.isLoading}>
+                <option disabled>Carregando…</option>
+              </Show>
+              <For each={eventsQ.data}>
+                {(ev) => (
+                  <option value={ev.id}>
+                    {ev.description} (-{ev.points} pts)
+                  </option>
+                )}
+              </For>
+            </select>
+          </div>
+
+          {/* Note */}
+          <input
+            type="text"
+            value={note()}
+            onInput={(e) => setNote(e.currentTarget.value)}
+            placeholder="Observação (opcional)…"
+            maxlength="256"
+            class="w-full bg-void-800 border border-void-600 px-3 py-2 font-mono text-xs text-stone-200 focus:outline-none focus:border-ember-700 transition-colors"
+          />
+
+          <Show when={error()}>
+            <p class="font-mono text-xs text-red-400">{error()}</p>
+          </Show>
+
+          <button
+            onClick={submit}
+            disabled={addMut.isPending || !playerId() || !penaltyEventId()}
+            class="btn-danger text-xs py-1.5 px-4 flex items-center gap-2 disabled:opacity-40"
+          >
+            <Show when={addMut.isPending}>
+              <Spinner size={12} />
+            </Show>
+            Aplicar Penalidade
+          </button>
+        </div>
+      </Show>
 
       {/* List */}
       <Show
@@ -156,86 +236,6 @@ export const WeekPenalties: Component<{ weekId: number }> = (props) => {
               </div>
             )}
           </For>
-        </div>
-      </Show>
-
-      {/* Add form — admin only */}
-      <Show when={isAdmin()}>
-        <div class="space-y-2 pt-1 border-t border-void-700">
-          <p class="font-mono text-[10px] text-stone-600 uppercase tracking-wider">
-            Aplicar penalidade
-          </p>
-
-          <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {/* Player select */}
-            <select
-              value={playerId() ?? ""}
-              onChange={(e) =>
-                setPlayerId(
-                  e.currentTarget.value ? Number(e.currentTarget.value) : null,
-                )
-              }
-              class="bg-void-800 border border-void-600 px-3 py-2 font-mono text-xs text-stone-200 focus:outline-none focus:border-ember-700 transition-colors"
-            >
-              <option value="">Selecionar player…</option>
-              <Show when={playersQ.isLoading}>
-                <option disabled>Carregando…</option>
-              </Show>
-              <For each={playersQ.data?.data}>
-                {(player) => (
-                  <option value={player.id}>{player.name}</option>
-                )}
-              </For>
-            </select>
-
-            {/* Penalty event select */}
-            <select
-              value={penaltyEventId() ?? ""}
-              onChange={(e) =>
-                setPenaltyEventId(
-                  e.currentTarget.value ? Number(e.currentTarget.value) : null,
-                )
-              }
-              class="bg-void-800 border border-void-600 px-3 py-2 font-mono text-xs text-stone-200 focus:outline-none focus:border-ember-700 transition-colors"
-            >
-              <option value="">Tipo de penalidade…</option>
-              <Show when={eventsQ.isLoading}>
-                <option disabled>Carregando…</option>
-              </Show>
-              <For each={eventsQ.data}>
-                {(ev) => (
-                  <option value={ev.id}>
-                    {ev.description} (-{ev.points} pts)
-                  </option>
-                )}
-              </For>
-            </select>
-          </div>
-
-          {/* Note */}
-          <input
-            type="text"
-            value={note()}
-            onInput={(e) => setNote(e.currentTarget.value)}
-            placeholder="Observação (opcional)…"
-            maxlength="256"
-            class="w-full bg-void-800 border border-void-600 px-3 py-2 font-mono text-xs text-stone-200 focus:outline-none focus:border-ember-700 transition-colors"
-          />
-
-          <Show when={error()}>
-            <p class="font-mono text-xs text-red-400">{error()}</p>
-          </Show>
-
-          <button
-            onClick={submit}
-            disabled={addMut.isPending || !playerId() || !penaltyEventId()}
-            class="btn-danger text-xs py-1.5 px-4 flex items-center gap-2 disabled:opacity-40"
-          >
-            <Show when={addMut.isPending}>
-              <Spinner size={12} />
-            </Show>
-            Aplicar Penalidade
-          </button>
         </div>
       </Show>
     </div>
