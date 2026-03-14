@@ -83,6 +83,24 @@ const NAV = [
     ),
   },
   {
+    href: "/app/penalty-events",
+    label: "Penalidades",
+    icon: (active: boolean) => (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 15 15"
+        fill="none"
+        stroke={active ? "#c8741c" : "currentColor"}
+        stroke-width="1.2"
+      >
+        <circle cx="7.5" cy="7.5" r="5.5" />
+        <line x1="7.5" y1="4.5" x2="7.5" y2="8" stroke-linecap="round" />
+        <circle cx="7.5" cy="10" r="0.6" fill={active ? "#c8741c" : "currentColor"} stroke="none" />
+      </svg>
+    ),
+  },
+  {
     href: "/app/scoring",
     label: "Pontuação",
     icon: (active: boolean) => (

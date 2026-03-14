@@ -18,6 +18,39 @@ export function useWeekPenalties(weekId: () => number) {
   }));
 }
 
+export function useCreatePenaltyEvent() {
+  const qc = useQueryClient();
+  return useMutation(() => ({
+    mutationFn: ({ description, points }: { description: string; points: number }) =>
+      penaltyApi.createEvent(description, points),
+    onSuccess: () => qc.invalidateQueries({ queryKey: penaltyKeys.events() }),
+  }));
+}
+
+export function useUpdatePenaltyEvent() {
+  const qc = useQueryClient();
+  return useMutation(() => ({
+    mutationFn: ({
+      id,
+      description,
+      points,
+    }: {
+      id: number;
+      description: string;
+      points: number;
+    }) => penaltyApi.updateEvent(id, description, points),
+    onSuccess: () => qc.invalidateQueries({ queryKey: penaltyKeys.events() }),
+  }));
+}
+
+export function useDeletePenaltyEvent() {
+  const qc = useQueryClient();
+  return useMutation(() => ({
+    mutationFn: (id: number) => penaltyApi.deleteEvent(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: penaltyKeys.events() }),
+  }));
+}
+
 export function useAddWeekPenalty() {
   const qc = useQueryClient();
   return useMutation(() => ({
