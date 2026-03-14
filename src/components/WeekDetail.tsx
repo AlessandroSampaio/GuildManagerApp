@@ -13,6 +13,7 @@ import { Component, For, Show, createSignal } from "solid-js";
 import { ErrorBanner } from "./ui/ErrorBanner";
 import { SkeletonList } from "./ui/Skeleton";
 import { Spinner } from "./ui/Spinner";
+import { WeekPenalties } from "./WeekPenalties";
 
 export const WeekDetail: Component<{ weekId: number; onClose: () => void }> = (
   props,
@@ -339,6 +340,9 @@ export const WeekDetail: Component<{ weekId: number; onClose: () => void }> = (
             </div>
           </Show>
         </div>
+
+        {/* Penalties */}
+        <WeekPenalties weekId={props.weekId} />
 
         {/* Quick action */}
         <div class="flex justify-end">

@@ -11,6 +11,14 @@ export function usePlayerList(page: () => number) {
   }));
 }
 
+export function useAllPlayers() {
+  return useQuery(() => ({
+    queryKey: ["players", "all"] as const,
+    queryFn: () => playersApi.list(1, 200),
+    staleTime: 2 * 60 * 1000,
+  }));
+}
+
 export function usePlayerDetail(id: () => number | null) {
   return useQuery(() => ({
     queryKey: playerKeys.detail(id()!),

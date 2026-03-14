@@ -75,3 +75,8 @@ export const characterKeys = {
   all: () => ["characters"] as const,
   search: (q: string, cls: string) => ["characters", "search", q, cls] as const,
 } as const;
+
+export const penaltyKeys = {
+  events: () => ["penalty-events"] as const,
+  weekPenalties: (weekId: number) => ["raid-weeks", "penalties", weekId] as const,
+} as const;
