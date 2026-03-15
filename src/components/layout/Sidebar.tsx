@@ -1,4 +1,5 @@
 import { authApi } from "@/api/auth";
+import { useWclStatus } from "@/lib";
 import { authStore } from "@/stores/auth";
 import { A, useLocation, useNavigate } from "@solidjs/router";
 import { Component, For } from "solid-js";
@@ -96,7 +97,13 @@ const NAV = [
       >
         <circle cx="7.5" cy="7.5" r="5.5" />
         <line x1="7.5" y1="4.5" x2="7.5" y2="8" stroke-linecap="round" />
-        <circle cx="7.5" cy="10" r="0.6" fill={active ? "#c8741c" : "currentColor"} stroke="none" />
+        <circle
+          cx="7.5"
+          cy="10"
+          r="0.6"
+          fill={active ? "#c8741c" : "currentColor"}
+          stroke="none"
+        />
       </svg>
     ),
   },
@@ -145,6 +152,8 @@ const NAV = [
 const Sidebar: Component = () => {
   const loc = useLocation();
   const nav = useNavigate();
+
+  useWclStatus();
 
   async function logout() {
     const rt = authStore.refreshToken();
