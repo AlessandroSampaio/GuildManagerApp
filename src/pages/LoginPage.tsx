@@ -1,5 +1,8 @@
 import LoginFormPanel from "@/components/forms/LoginFormPanel";
-import { Component } from "solid-js";
+import RegisterFormPanel from "@/components/forms/RegisterFormPanel";
+import { Component, createSignal, Show } from "solid-js";
+
+type Tab = "login" | "register";
 
 const RuneCorner: Component<{ class?: string }> = (p) => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class={p.class}>
@@ -9,6 +12,8 @@ const RuneCorner: Component<{ class?: string }> = (p) => (
 );
 
 const LoginPage: Component = () => {
+  const [tab, setTab] = createSignal<Tab>("login");
+
   return (
     <div class="flex-1 flex items-center justify-center relative overflow-hidden bg-void-900">
       {/* Background grid */}
@@ -72,8 +77,38 @@ const LoginPage: Component = () => {
             </p>
           </div>
 
+          {/* Tabs */}
+          <div class="flex border-b border-void-700" role="tablist">
+            <button
+              role="tab"
+              aria-selected={tab() === "login"}
+              onClick={() => setTab("login")}
+              class={`flex-1 py-2.5 font-mono text-[11px] tracking-widest uppercase transition-colors duration-150 ${
+                tab() === "login"
+                  ? "text-ember-500 border-b-2 border-ember-600 -mb-px bg-void-800/60"
+                  : "text-stone-600 hover:text-stone-400 border-b-2 border-transparent -mb-px"
+              }`}
+            >
+              Entrar
+            </button>
+            <button
+              role="tab"
+              aria-selected={tab() === "register"}
+              onClick={() => setTab("register")}
+              class={`flex-1 py-2.5 font-mono text-[11px] tracking-widest uppercase transition-colors duration-150 ${
+                tab() === "register"
+                  ? "text-ember-500 border-b-2 border-ember-600 -mb-px bg-void-800/60"
+                  : "text-stone-600 hover:text-stone-400 border-b-2 border-transparent -mb-px"
+              }`}
+            >
+              Registrar
+            </button>
+          </div>
+
           <div role="tabpanel">
-            <LoginFormPanel />
+            <Show when={tab() === "login"} fallback={<RegisterFormPanel />}>
+              <LoginFormPanel />
+            </Show>
           </div>
         </div>
 

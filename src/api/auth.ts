@@ -1,10 +1,19 @@
-import type { AuthResponse, LoginRequest } from "@/types/auth";
+import type { AuthResponse, LoginRequest, RegisterRequest } from "@/types/auth";
 import { req } from "./client";
 
 export const authApi = {
   login: (d: LoginRequest) =>
     req<AuthResponse>(
       "/api/auth/login",
+      {
+        method: "POST",
+        body: JSON.stringify(d),
+      },
+      true,
+    ),
+  register: (d: RegisterRequest) =>
+    req<AuthResponse>(
+      "/api/auth/register",
       {
         method: "POST",
         body: JSON.stringify(d),
