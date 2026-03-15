@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#06060e"/>
+    </radialGradient>
+    <linearGradient id="hordeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8a0000"/>
+      <stop offset="100%" stop-color="#3a0000"/>
+    </linearGradient>
+    <linearGradient id="alliGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#003a8a"/>
+      <stop offset="100%" stop-color="#001240"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe580"/>
+      <stop offset="45%" stop-color="#c8a44a"/>
+      <stop offset="100%" stop-color="#7a5608"/>
+    </linearGradient>
+    <clipPath id="leftHalfClip">
+      <path d="M512 166 L300 246 L300 516 Q300 692 512 824 Z"/>
+    </clipPath>
+    <clipPath id="rightHalfClip">
+      <path d="M512 166 L724 246 L724 516 Q724 692 512 824 Z"/>
+    </clipPath>
+    <clipPath id="shieldClip">
+      <path d="M512 166 L724 246 L724 516 Q724 692 512 824 Q300 692 300 516 L300 246 Z"/>
+    </clipPath>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="6" stdDeviation="18" flood-color="#000" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <circle cx="512" cy="512" r="512" fill="url(#bg)"/>
+  <circle cx="512" cy="512" r="478" fill="none" stroke="#c8a44a" stroke-width="7"/>
+  <circle cx="512" cy="512" r="462" fill="none" stroke="#c8a44a" stroke-width="2" opacity="0.35"/>
+
+  <!-- Shield gold border -->
+  <path d="M512 148 L742 236 L742 520 Q742 710 512 856 Q282 710 282 520 L282 236 Z"
+        fill="url(#goldGrad)" filter="url(#shadow)"/>
+  <!-- Border highlight -->
+  <path d="M512 160 L730 242 L730 518 Q730 704 512 844 Q294 704 294 518 L294 242 Z"
+        fill="none" stroke="#ffe880" stroke-width="3" opacity="0.35"/>
+
+  <!-- Left half: Horde red -->
+  <path d="M512 166 L300 246 L300 516 Q300 692 512 824 Z" fill="url(#hordeGrad)"/>
+  <!-- Right half: Alliance blue -->
+  <path d="M512 166 L724 246 L724 516 Q724 692 512 824 Z" fill="url(#alliGrad)"/>
+
+  <!-- Inner shield border -->
+  <path d="M512 175 L716 251 L716 515 Q716 686 512 816 Q308 686 308 515 L308 251 Z"
+        fill="none" stroke="#c8a44a" stroke-width="2.5" opacity="0.5"/>
+
+  <!-- Center gold divider -->
+  <rect x="507" y="168" width="10" height="655" fill="url(#goldGrad)" clip-path="url(#shieldClip)"/>
+
+  <!-- Shield bottom point accent -->
+  <path d="M497 820 L512 852 L527 820" fill="#c8a44a" opacity="0.88"/>
+</svg>

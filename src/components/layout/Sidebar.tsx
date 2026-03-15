@@ -118,15 +118,13 @@ const NAV = [
         fill="none"
         stroke={active ? "#c8741c" : "currentColor"}
         stroke-width="1.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       >
-        <path d="M2 12l3-4 2.5 2 3-5 2.5 3" />
-        <circle
-          cx="13"
-          cy="3"
-          r="1.5"
-          fill={active ? "#c8741c" : "none"}
-          stroke={active ? "#c8741c" : "currentColor"}
-        />
+        <line x1="1" y1="13.5" x2="14" y2="13.5" />
+        <rect x="2" y="8" width="2.5" height="5.5" rx="0.3" fill={active ? "#c8741c" : "none"} />
+        <rect x="6.25" y="4.5" width="2.5" height="9" rx="0.3" fill={active ? "#c8741c" : "none"} />
+        <rect x="10.5" y="1.5" width="2.5" height="12" rx="0.3" fill={active ? "#c8741c" : "none"} />
       </svg>
     ),
   },
