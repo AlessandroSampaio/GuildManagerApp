@@ -1,11 +1,12 @@
 import { fileOpsIpc } from "@/ipc";
 import { PlayerScoringResult } from "@/types/player-scoring";
-import { openPath } from "@tauri-apps/plugin-opener";
-import * as XLSX from "xlsx";
+import { PlayerWeekPenalty } from "@/types/penalty";
+import * as XLSX from "xlsx-js-style";
 
 export async function exportRaidWeekXlsx(
   result: PlayerScoringResult,
   weekLabel: string,
+  penalties: PlayerWeekPenalty[] = [],
 ): Promise<void> {
   const players = result.players;
 
@@ -19,8 +20,29 @@ export async function exportRaidWeekXlsx(
   }
   const fightNames = fightNameSet.values();
 
-  const header = ["Player", ...fightNames, "Total"];
-  const rows: (string | number | null)[][] = [header];
+  // Build penalty totals per player
+  const penaltyByPlayer = new Map<number, number>();
+  for (const p of penalties) {
+    const prev = penaltyByPlayer.get(p.playerId) ?? 0;
+    penaltyByPlayer.set(p.playerId, prev + p.points);
+  }
+
+  const header = ["Player", ...fightNames, "Penalidades", "Total"];
+
+  const headerStyle = {
+    font: { bold: true, color: { rgb: "FFFFFF" } },
+    fill: { fgColor: { rgb: "1C1917" } },
+    alignment: { horizontal: "center" as const },
+    border: {
+      bottom: { style: "thin", color: { rgb: "78716C" } },
+    },
+  };
+
+  const headerRow = header.map(
+    (h) => ({ v: h, t: "s", s: headerStyle }) as XLSX.CellObject,
+  );
+
+  const rows: XLSX.CellObject[][] = [headerRow];
 
   for (const player of players) {
     const fightPoints = new Map<string, number>();
@@ -31,21 +53,31 @@ export async function exportRaidWeekXlsx(
       }
     }
 
-    const row: (string | number | null)[] = [player.playerName];
-    for (const name of fightNames) {
-      row.push(fightPoints.get(name) ?? null);
-    }
-    row.push(player.totalPoints);
+    const penaltyTotal = penaltyByPlayer.get(player.playerId) ?? 0;
+
+    const row: XLSX.CellObject[] = [
+      { v: player.playerName, t: "s" },
+      ...fightNames.map(
+        (name): XLSX.CellObject => ({
+          v: fightPoints.get(name) ?? "",
+          t: fightPoints.has(name) ? "n" : "s",
+        }),
+      ),
+      {
+        v: penaltyTotal !== 0 ? penaltyTotal : "",
+        t: penaltyTotal !== 0 ? "n" : "s",
+        s: penaltyTotal < 0 ? { font: { color: { rgb: "EF4444" } } } : undefined,
+      },
+      { v: player.totalPoints, t: "n", s: { font: { bold: true } } },
+    ];
     rows.push(row);
   }
-
-  console.log(rows);
 
   const ws = XLSX.utils.aoa_to_sheet(rows);
 
   // Column widths
   const colWidths = header.map((h, i) =>
-    i === 0 ? { wch: 24 } : { wch: Math.max(h.length + 2, 10) },
+    i === 0 ? { wch: 24 } : { wch: Math.max(h.length + 2, 12) },
   );
   ws["!cols"] = colWidths;
 
@@ -59,14 +91,9 @@ export async function exportRaidWeekXlsx(
 
   const filename = `${weekLabel.replace(/[^a-zA-Z0-9_\-]/g, "_")}_pontos.xlsx`;
 
-  // Write to Downloads folder via Rust (std::fs::write)
   const downloadDir = await fileOpsIpc.get_download_dir();
   const fullPath = `${downloadDir}\\${filename}`;
-  console.log(Array.from(data));
   await fileOpsIpc.save_bytes(fullPath, Array.from(data));
-
-  // Open with default application (e.g. Excel, LibreOffice Calc)
-  // await openPath(fullPath);
 }
 
 class LinkedSet<T> {

@@ -1,4 +1,5 @@
 import { ApiError } from "@/api/client";
+import { penaltyApi } from "@/api/penalty";
 import { playerScoringApi } from "@/api/player-scoring";
 import { PlayerCard } from "@/components/PlayerCard";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -9,6 +10,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { fmtDate } from "@/helpers";
 import { tierBadgeClass } from "@/helpers/colors";
 import { exportRaidWeekXlsx } from "@/lib/export-xlsx";
+import { PlayerWeekPenalty } from "@/types/penalty";
 import { PlayerScoringResult } from "@/types/player-scoring";
 import { useNavigate, useParams } from "@solidjs/router";
 import { Component, createSignal, For, onMount, Show } from "solid-js";
@@ -92,9 +94,14 @@ const PlayerScoringPage: Component = () => {
                   setExporting(true);
                   setExportError(null);
                   try {
+                    let weekPenalties: PlayerWeekPenalty[] = [];
+                    if (week()?.id) {
+                      weekPenalties = await penaltyApi.listWeekPenalties(week()!.id);
+                    }
                     await exportRaidWeekXlsx(
                       result()!,
                       week()?.label ?? "raidweek",
+                      weekPenalties,
                     );
                   } catch (e) {
                     setExportError(e instanceof Error ? e.message : String(e));
