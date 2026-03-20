@@ -44,6 +44,23 @@ const NAV = [
     ),
   },
   {
+    href: "/app/guilds",
+    label: "Guildas",
+    icon: (active: boolean) => (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 15 15"
+        fill="none"
+        stroke={active ? "#c8741c" : "currentColor"}
+        stroke-width="1.2"
+      >
+        <path d="M7.5 1.5L2 4v4.5c0 3.2 2.5 5.8 5.5 6 3-.2 5.5-2.8 5.5-6V4z" />
+        <path d="M5.5 7.5l1.5 1.5 2.5-2.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    ),
+  },
+  {
     href: "/app/players",
     label: "Jogadores",
     icon: (active: boolean) => (

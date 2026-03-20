@@ -19,6 +19,7 @@ const RaidWeeksPage = lazy(() => import("@/pages/RaidWeeksPage"));
 const PlayerScoringPage = lazy(() => import("@/pages/PlayerScoringPage"));
 const WclCallbackPage = lazy(() => import("@/pages/WclCallbackPage"));
 const PenaltyEventsPage = lazy(() => import("@/pages/PenaltyEventsPage"));
+const GuildsPage = lazy(() => import("@/pages/GuildsPage"));
 
 const RootRedirect: Component = () => {
   const nav = useNavigate();
@@ -65,6 +66,7 @@ const App: Component = () => (
         <Route path="/raid-weeks" component={RaidWeeksPage} />
         <Route path="/player-scoring/:weekId" component={PlayerScoringPage} />
         <Route path="/penalty-events" component={PenaltyEventsPage} />
+        <Route path="/guilds" component={GuildsPage} />
         <Route path="/settings" component={SettingsPage} />
       </Route>
     </HashRouter>

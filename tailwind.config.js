@@ -4,6 +4,9 @@ export default {
   theme: {
     extend: {
       colors: {
+        paladin: {
+          DEFAULT: "#F58CBA",
+        },
         void: {
           950: "#04050a",
           900: "#070910",

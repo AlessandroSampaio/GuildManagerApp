@@ -80,3 +80,10 @@ export const penaltyKeys = {
   events: () => ["penalty-events"] as const,
   weekPenalties: (weekId: number) => ["raid-weeks", "penalties", weekId] as const,
 } as const;
+
+export const guildKeys = {
+  all: () => ["guilds"] as const,
+  lists: () => ["guilds", "list"] as const,
+  list: (page: number) => ["guilds", "list", page] as const,
+  roster: (id: number) => ["guilds", "roster", id] as const,
+} as const;
