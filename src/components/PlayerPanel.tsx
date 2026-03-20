@@ -203,7 +203,14 @@ export const PlayerPanel: Component<{
             </div>
           </div>
 
-          <div>
+          <div class="border-t border-void-700 pt-3">
+            <CharacterSearchPicker
+              playerId={props.playerId}
+              linkedIds={linkedIds()}
+            />
+          </div>
+
+          <div class="border-t border-void-700 pt-3">
             <p class="label-xs mb-2">Characters vinculados</p>
             <Show
               when={detail.data!.characters.length > 0}
@@ -216,7 +223,7 @@ export const PlayerPanel: Component<{
                     Nenhum character vinculado
                   </p>
                   <p class="font-mono text-[10px] text-stone-700 mt-1">
-                    Use o campo abaixo para adicionar pelo ID
+                    Use o campo acima para buscar e adicionar
                   </p>
                 </div>
               }
@@ -234,13 +241,6 @@ export const PlayerPanel: Component<{
                 </For>
               </div>
             </Show>
-          </div>
-
-          <div class="pt-1 border-t border-void-700">
-            <CharacterSearchPicker
-              playerId={props.playerId}
-              linkedIds={linkedIds()}
-            />
           </div>
         </div>
       </Show>
