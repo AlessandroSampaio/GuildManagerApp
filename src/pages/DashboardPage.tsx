@@ -2,19 +2,11 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { SkeletonList } from "@/components/ui/Skeleton";
 import StatCard from "@/components/ui/StatCard";
+import { fmtDate } from "@/helpers";
 import { useReportList } from "@/lib";
 import { authStore } from "@/stores/auth";
 import { A } from "@solidjs/router";
 import { Component, For, Show } from "solid-js";
-
-// Helpers
-function fmt(iso: string) {
-  return new Date(iso).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-}
 
 function duration(start: string, end: string) {
   const ms = new Date(end).getTime() - new Date(start).getTime();
@@ -25,11 +17,6 @@ function duration(start: string, end: string) {
 
 const DashboardPage: Component = () => {
   const reports = useReportList(() => 1);
-
-  const totalKills = () =>
-    reports.data?.reduce((s, r) => s + (r.killCount ?? 0), 0) ?? 0;
-  const totalFights = () =>
-    reports.data?.reduce((s, r) => s + (r.fightCount ?? 0), 0) ?? 0;
 
   return (
     <div class="flex-1 overflow-y-auto p-8">
@@ -49,12 +36,6 @@ const DashboardPage: Component = () => {
           value={reports.isSuccess ? (reports.data?.length ?? 0) : "—"}
           sub="importados"
           delay="0.05s"
-        />{" "}
-        <StatCard
-          label="Kills"
-          value={totalKills()}
-          sub={`de ${totalFights()} fights`}
-          delay="0.10s"
         />
       </div>
 
@@ -151,15 +132,10 @@ const DashboardPage: Component = () => {
                       >
                         {r.title}
                       </p>
-                      <Show when={(r.killCount ?? 0) > 0}>
-                        <span class="tag-kill text-[9px] shrink-0">
-                          {r.killCount} kills
-                        </span>
-                      </Show>
                     </div>
                     <p class="font-mono text-[10px] text-stone-600">
                       {r.id} · {r.guildName ?? "sem guilda"} ·{" "}
-                      {fmt(r.startTime)}
+                      {fmtDate(r.startTime)}
                     </p>
                   </div>
                   <div class="flex items-center gap-4 shrink-0 ml-4">

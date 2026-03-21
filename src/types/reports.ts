@@ -7,7 +7,6 @@ export interface Report {
   endTime: string;
   guildName: string | null;
   fightCount: number;
-  killCount: number;
   importedAt: string;
   importStatus?: "Queued" | "Importing" | "Done" | "Failed";
 }
