@@ -1,3 +1,4 @@
+import { useRaidWeekWs } from "@/lib/useRaidWeekWs";
 import { ApiError } from "@/api/client";
 import { formatWeekRange, isTuesday } from "@/helpers";
 import {
@@ -19,6 +20,7 @@ export const WeekDetail: Component<{ weekId: number; onClose: () => void }> = (
   props,
 ) => {
   const isAdmin = () => authStore.user()?.role?.toUpperCase() === "ADMIN";
+  useRaidWeekWs(() => props.weekId, props.onClose);
   const weekQ = useRaidWeekDetail(() => props.weekId);
   const updateMut = useUpdateRaidWeek();
   const deleteMut = useDeleteRaidWeek();
