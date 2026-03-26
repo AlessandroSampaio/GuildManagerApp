@@ -35,6 +35,19 @@ jobs:
       - name: Install frontend dependencies
         run: bun install
 
+      - name: Extract changelog for ${{ github.ref_name }}
+        id: changelog
+        shell: bash
+        run: |
+          version="${{ github.ref_name }}"
+          version="${version#v}"
+          body=$(awk "/^## \[${version}\]/{found=1; next} found && /^## \[/{exit} found{print}" CHANGELOG.md)
+          {
+            echo "body<<EOF"
+            echo "$body"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - name: Build and publish Tauri app
         uses: tauri-apps/tauri-action@v0.6.2
         env:
@@ -45,7 +58,7 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Guild Manager v__VERSION__"
-          releaseBody: "See the assets below to download this release."
+          releaseBody: ${{ steps.changelog.outputs.body }}
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
