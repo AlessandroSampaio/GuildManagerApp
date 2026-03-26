@@ -1,6 +1,6 @@
 [package]
 name = "guild-manager-app"
-version = "0.1.0"
+version = "0.2.1"
 description = "Guild Manager Desktop Application"
 authors = ["AlessandroSampaio"]
 edition = "2021"
