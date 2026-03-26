@@ -1,5 +1,6 @@
 import LoginFormPanel from "@/components/forms/LoginFormPanel";
 import RegisterFormPanel from "@/components/forms/RegisterFormPanel";
+import { appVersion } from "@/lib/version";
 import { Component, createSignal, Show } from "solid-js";
 
 type Tab = "login" | "register";
@@ -113,7 +114,7 @@ const LoginPage: Component = () => {
         </div>
 
         <p class="text-center font-mono text-[10px] text-stone-700 mt-4 tracking-widest">
-          GUILD MANAGER DESKTOP CLIENT · v1.1
+          GUILD MANAGER DESKTOP CLIENT · v{appVersion()}
         </p>
       </div>
     </div>

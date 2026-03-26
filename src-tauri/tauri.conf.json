@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "guild-manager-app",
-  "version": "0.2.1",
+  "version": "../package.json",
   "identifier": "com.aless.guild-manager-app",
   "build": {
     "beforeDevCommand": "bun run dev",

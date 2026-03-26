@@ -4,6 +4,7 @@
  * Window controls (minimize, maximize, close) are called via the TauRPC
  * `windowIpc` proxy — fully typed, no raw `invoke()` strings.
  */
+import { appVersion } from "@/lib/version";
 import { Component, createSignal, onMount } from "solid-js";
 import { createTauRPCProxy } from "@/ipc/bindings";
 
@@ -29,7 +30,7 @@ const TitleBar: Component = () => {
           <div class="absolute inset-[3px] bg-ember-700 rotate-45" />
         </div>
         <span class="font-display text-[9px] tracking-[0.3em] text-ember-700 uppercase">
-          Guild Manager v1.1.0
+          Guild Manager v{appVersion()}
         </span>
       </div>
 
