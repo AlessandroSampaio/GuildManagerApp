@@ -5,6 +5,10 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/)
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-03-26
+### Added
+- RaidWeeks agora reflete alterações realizadas por outros usuários sem a necessidade de atualizar a página
+
 ## [0.3.1] - 2026-03-26
 ### Added
 - Criação de changelog usando o modelo [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/)
