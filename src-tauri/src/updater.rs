@@ -1,5 +1,3 @@
-use serde::Serialize;
-use specta::Type;
 use std::sync::Arc;
 use tauri::AppHandle;
 use tauri_plugin_updater::UpdaterExt;
