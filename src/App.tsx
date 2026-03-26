@@ -21,6 +21,7 @@ const PlayerScoringPage = lazy(() => import("@/pages/PlayerScoringPage"));
 const WclCallbackPage = lazy(() => import("@/pages/WclCallbackPage"));
 const PenaltyEventsPage = lazy(() => import("@/pages/PenaltyEventsPage"));
 const GuildsPage = lazy(() => import("@/pages/GuildsPage"));
+const AuditLogPage = lazy(() => import("@/pages/AuditLogPage"));
 
 const RootRedirect: Component = () => {
   const nav = useNavigate();
@@ -40,6 +41,16 @@ const Guard: Component<{ children: any }> = (p) => {
   const nav = useNavigate();
   if (!authStore.isAuthenticated()) {
     nav("/login", { replace: true });
+    return null;
+  }
+  return p.children;
+};
+
+// Restrict access to admin-only routes
+const AdminGuard: Component<{ children: any }> = (p) => {
+  const nav = useNavigate();
+  if (authStore.user()?.role?.toLowerCase() !== "admin") {
+    nav("/app/dashboard", { replace: true });
     return null;
   }
   return p.children;
@@ -69,6 +80,14 @@ const App: Component = () => (
         <Route path="/penalty-events" component={PenaltyEventsPage} />
         <Route path="/guilds" component={GuildsPage} />
         <Route path="/settings" component={SettingsPage} />
+        <Route
+          path="/audit-log"
+          component={() => (
+            <AdminGuard>
+              <AuditLogPage />
+            </AdminGuard>
+          )}
+        />
       </Route>
     </HashRouter>
     <UpdateNotification />

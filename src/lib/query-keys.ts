@@ -81,6 +81,13 @@ export const penaltyKeys = {
   weekPenalties: (weekId: number) => ["raid-weeks", "penalties", weekId] as const,
 } as const;
 
+export const auditLogKeys = {
+  all: () => ["audit-log"] as const,
+  lists: () => ["audit-log", "list"] as const,
+  list: (page: number, from?: string, to?: string) =>
+    ["audit-log", "list", page, from ?? "", to ?? ""] as const,
+} as const;
+
 export const guildKeys = {
   all: () => ["guilds"] as const,
   lists: () => ["guilds", "list"] as const,

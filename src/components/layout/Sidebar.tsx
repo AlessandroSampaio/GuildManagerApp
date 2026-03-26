@@ -2,7 +2,7 @@ import { authApi } from "@/api/auth";
 import { useWclStatus } from "@/lib";
 import { authStore } from "@/stores/auth";
 import { A, useLocation, useNavigate } from "@solidjs/router";
-import { Component, For } from "solid-js";
+import { Component, For, Show } from "solid-js";
 
 const NAV = [
   {
@@ -181,6 +181,7 @@ const Sidebar: Component = () => {
   }
 
   const initials = () => (authStore.user()?.username ?? "?")[0].toUpperCase();
+  const isAdmin = () => authStore.user()?.role?.toLowerCase() === "admin";
 
   return (
     <aside class="w-[13.3rem] bg-void-950 border-r border-void-700 flex flex-col shrink-0">
@@ -224,6 +225,39 @@ const Sidebar: Component = () => {
             );
           }}
         </For>
+
+        {/* Admin-only items */}
+        <Show when={isAdmin()}>
+          {() => {
+            const active = () => loc.pathname.startsWith("/app/audit-log");
+            return (
+              <A
+                href="/app/audit-log"
+                class={`flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold tracking-wide
+                        transition-all duration-150 border-l-2
+                        ${
+                          active()
+                            ? "bg-forge-900/40 text-ember-600 border-ember-700"
+                            : "text-stone-500 hover:text-stone-200 hover:bg-void-800 border-transparent"
+                        }`}
+              >
+                <svg
+                  width="15"
+                  height="15"
+                  viewBox="0 0 15 15"
+                  fill="none"
+                  stroke={active() ? "#c8741c" : "currentColor"}
+                  stroke-width="1.2"
+                >
+                  <path d="M7.5 1.5L2 4v4c0 3.5 2.5 5.8 5.5 6 3-.2 5.5-2.5 5.5-6V4z" />
+                  <line x1="5" y1="7.5" x2="10" y2="7.5" />
+                  <line x1="7.5" y1="5" x2="7.5" y2="10" />
+                </svg>
+                Audit Log
+              </A>
+            );
+          }}
+        </Show>
       </nav>
 
       {/* WCL status pill */}
