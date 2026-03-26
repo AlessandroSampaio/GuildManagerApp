@@ -45,6 +45,6 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "Guild Manager v__VERSION__"
           releaseBody: "See the assets below to download this release."
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
