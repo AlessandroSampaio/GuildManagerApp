@@ -3,6 +3,7 @@ import { QueryClientProvider } from "@tanstack/solid-query";
 import { Component, lazy } from "solid-js";
 import AppShell from "./components/layout/AppShell";
 import TitleBar from "./components/layout/TitleBar";
+import UpdateNotification from "./components/UpdateNotification";
 import "./index.css";
 import { queryClient } from "./lib";
 import { authStore } from "./stores/auth";
@@ -70,6 +71,7 @@ const App: Component = () => (
         <Route path="/settings" component={SettingsPage} />
       </Route>
     </HashRouter>
+    <UpdateNotification />
     <SolidQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>
 );

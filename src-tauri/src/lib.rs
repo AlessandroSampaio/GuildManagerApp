@@ -1,5 +1,6 @@
 mod events;
 mod file_ops;
+mod updater;
 mod wcl_auth;
 mod window;
 
@@ -9,6 +10,7 @@ use std::sync::Arc;
 use tauri::AppHandle;
 use taurpc::Router;
 use tokio::sync::Mutex;
+use updater::{UpdaterApi, UpdaterApiImpl};
 use wcl_auth::{WclAuthApi, WclAuthApiImpl};
 use window::{WindowApi, WindowApiImpl};
 
@@ -37,6 +39,12 @@ pub fn run() {
         .merge(AppEventsApiImpl.into_handler())
         .merge(WindowApiImpl.into_handler())
         .merge(
+            UpdaterApiImpl {
+                app_slot: app_slot.clone(),
+            }
+            .into_handler(),
+        )
+        .merge(
             WclAuthApiImpl {
                 app_slot: app_slot.clone(),
                 state: state.clone(),
@@ -47,6 +55,7 @@ pub fn run() {
     let app_slot_setup = app_slot.clone();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .setup(move |app| {
             // Seed the handle into the shared slot; all subsequent IPC calls
