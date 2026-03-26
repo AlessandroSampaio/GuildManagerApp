@@ -5,6 +5,10 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/)
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-03-26
+### Added
+- Adiciona suporte a ambientes linux
+
 ## [0.3.2] - 2026-03-26
 ### Added
 - RaidWeeks agora reflete alterações realizadas por outros usuários sem a necessidade de atualizar a página
