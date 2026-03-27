@@ -20,7 +20,7 @@ export const WeekDetail: Component<{ weekId: number; onClose: () => void }> = (
   props,
 ) => {
   const isAdmin = () => authStore.user()?.role?.toUpperCase() === "ADMIN";
-  useRaidWeekWs(() => props.weekId, props.onClose);
+  const { isConnected } = useRaidWeekWs(() => props.weekId, props.onClose);
   const weekQ = useRaidWeekDetail(() => props.weekId);
   const updateMut = useUpdateRaidWeek();
   const deleteMut = useDeleteRaidWeek();
@@ -105,7 +105,7 @@ export const WeekDetail: Component<{ weekId: number; onClose: () => void }> = (
       </Show>
       <Show when={week()}>
         {/* Header */}
-        <div class="flex items-start justify-between">
+        <div class="flex items-start justify-between gap-3">
           <div>
             <Show
               when={!editing()}
@@ -225,6 +225,22 @@ export const WeekDetail: Component<{ weekId: number; onClose: () => void }> = (
               Ver Pontuação
             </button>
           </Show>
+
+          {/* WS connection indicator */}
+          <div class="flex items-center gap-1.5 ml-auto shrink-0 self-center pr-4">
+            <div
+              class={`w-1.5 h-1.5 rounded-full transition-colors ${
+                isConnected()
+                  ? "bg-emerald-500 shadow-[0_0_4px_rgba(52,211,153,0.8)] animate-pulse"
+                  : "bg-void-500"
+              }`}
+              title={isConnected() ? "WebSocket conectado" : "Reconectando..."}
+              aria-hidden="true"
+            />
+            <span class="font-mono text-[10px] text-stone-600">
+              {isConnected() ? "live" : "reconectando..."}
+            </span>
+          </div>
         </div>
 
         {/* Confirm delete */}
