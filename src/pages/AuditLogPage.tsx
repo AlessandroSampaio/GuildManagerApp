@@ -1,33 +1,20 @@
 import { EmptyState } from "@/components/ui/EmptyState";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { SkeletonList } from "@/components/ui/Skeleton";
+import { fmtDate } from "@/helpers";
 import { useAuditLogList } from "@/lib/queries/audit-log";
 import { AuditLogDto } from "@/types/audit-log";
 import { Component, createEffect, createSignal, For, on, Show } from "solid-js";
 
-// ── helpers ──────────────────────────────────────────────────────────────────
-
-function fmtDateTime(iso: string) {
-  return new Date(iso).toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-}
-
 function ActionBadge(props: { action: string }) {
   const a = props.action.toUpperCase();
-  const style =
-    a === "CREATE"
-      ? "text-emerald-400 bg-emerald-950/40 border-emerald-900/50"
-      : a === "UPDATE"
-        ? "text-amber-400 bg-amber-950/40 border-amber-900/50"
-        : a === "DELETE"
-          ? "text-red-400 bg-red-950/40 border-red-900/50"
-          : "text-stone-400 bg-void-800 border-void-600";
+  const style = a.includes("ADDED")
+    ? "text-emerald-400 bg-emerald-950/40 border-emerald-900/50"
+    : a.includes("STARTED")
+      ? "text-amber-400 bg-amber-950/40 border-amber-900/50"
+      : a.includes("REMOVED")
+        ? "text-red-400 bg-red-950/40 border-red-900/50"
+        : "text-stone-400 bg-void-800 border-void-600";
 
   return (
     <span
@@ -42,7 +29,7 @@ function ActionBadge(props: { action: string }) {
 
 const PAGE_SIZE = 20;
 
-const COLS = "grid-cols-[160px_100px_180px_130px_1fr]";
+const COLS = "grid-cols-[160px_160px_180px_130px_1fr]";
 
 const AuditLogPage: Component = () => {
   const [page, setPage] = createSignal(1);
@@ -127,9 +114,7 @@ const AuditLogPage: Component = () => {
           <p class="text-red-400 font-semibold text-sm mb-1">
             Erro ao carregar audit log
           </p>
-          <p class="text-stone-600 font-mono text-xs">
-            {String(result.error)}
-          </p>
+          <p class="text-stone-600 font-mono text-xs">{String(result.error)}</p>
         </div>
       </Show>
 
@@ -144,10 +129,7 @@ const AuditLogPage: Component = () => {
           }
         >
           {/* Header row */}
-          <div
-            class={`grid ${COLS} gap-3 px-4 py-2 mb-1`}
-            aria-hidden="true"
-          >
+          <div class={`grid ${COLS} gap-3 px-4 py-2 mb-1`} aria-hidden="true">
             {["Data / Hora", "Ação", "Entidade", "Usuário", "Detalhes"].map(
               (h) => (
                 <p class="label-xs">{h}</p>
@@ -166,7 +148,7 @@ const AuditLogPage: Component = () => {
                 >
                   {/* Data/hora */}
                   <p class="font-mono text-[11px] text-stone-500 leading-relaxed">
-                    {fmtDateTime(log.occurredAt)}
+                    {fmtDate(log.occurredAt)}
                   </p>
 
                   {/* Ação */}
@@ -216,10 +198,7 @@ const AuditLogPage: Component = () => {
               Página {page()}
               <Show when={result.data?.total}>
                 {(total) => (
-                  <span class="text-stone-700">
-                    {" "}
-                    · {total()} registros
-                  </span>
+                  <span class="text-stone-700"> · {total()} registros</span>
                 )}
               </Show>
             </span>
