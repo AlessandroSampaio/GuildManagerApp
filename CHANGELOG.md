@@ -5,6 +5,14 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/)
 
 ## [Unreleased]
 
+## [0.3.4] - 2026-03-27
+### Added
+- Adiciona detalhamento de log de auditoria ao click
+- Adiciona badge de track de conexão ao servidor durante detalhamento de raid week
+
+### Fixed
+- Largura da coluna Ação na página de auditoria
+
 ## [0.3.3] - 2026-03-26
 ### Added
 - Adiciona suporte a ambientes linux
