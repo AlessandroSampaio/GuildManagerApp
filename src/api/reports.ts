@@ -13,6 +13,8 @@ export const reportsApi = {
   get: (code: string) => req<ReportDetail>(`/api/reports/${code}`),
   import: (code: string) =>
     req<ImportAccepted>(`/api/reports/import/${code}`, { method: "POST" }),
+  update: (id: string) =>
+    req<ImportAccepted>(`/api/reports/${id}/update`, { method: "POST" }),
   getPerformance: (code: string) =>
     req<Record<number, PerformanceEntry[]>>(`/api/reports/${code}/performance`),
   connectImportWs(code: string, token: string | null): WebSocket {

@@ -3,13 +3,29 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { SkeletonList } from "@/components/ui/Skeleton";
 import { fmtDate } from "@/helpers";
-import { useReportList } from "@/lib";
+import { useReportList, useResyncReport } from "@/lib";
+import { ImportAccepted } from "@/types/reports";
 import { A } from "@solidjs/router";
 import { Component, createSignal, For, Show } from "solid-js";
 
 const ReportsPage: Component = () => {
   const [showModal, setShowModal] = createSignal(false);
   const [page, setPage] = createSignal(1);
+  const [resyncingId, setResyncingId] = createSignal<string | null>(null);
+  const [resyncAccepted, setResyncAccepted] = createSignal<ImportAccepted | null>(null);
+
+  const resync = useResyncReport();
+
+  const handleResync = (id: string) => {
+    setResyncingId(id);
+    resync.mutate(id, {
+      onSuccess: (accepted) => {
+        setResyncingId(null);
+        setResyncAccepted(accepted);
+      },
+      onError: () => setResyncingId(null),
+    });
+  };
 
   const reports = useReportList(page);
 
@@ -91,67 +107,118 @@ const ReportsPage: Component = () => {
                     60000,
                 );
                 return (
-                  <A
-                    href={`/app/reports/${r.id}`}
+                  <div
                     role="listitem"
-                    class="card-interactive grid grid-cols-[1fr_120px_80px_80px_100px]
-                             gap-2 items-center py-3.5"
+                    class="relative card-interactive"
                     style={`animation-delay:${i() * 30}ms`}
                   >
-                    <div class="min-w-0">
-                      <div class="flex items-center gap-2">
-                        <p
-                          class="font-semibold text-stone-200 text-sm truncate
-                                     group-hover:text-ember-500 transition-colors"
-                        >
-                          {r.title}
+                    <A
+                      href={`/app/reports/${r.id}`}
+                      class="grid grid-cols-[1fr_120px_80px_80px_100px]
+                               gap-2 items-center py-3.5 pr-12"
+                    >
+                      <div class="min-w-0">
+                        <div class="flex items-center gap-2">
+                          <p
+                            class="font-semibold text-stone-200 text-sm truncate
+                                       group-hover:text-ember-500 transition-colors"
+                          >
+                            {r.title}
+                          </p>
+                          {r.importStatus === "Queued" && (
+                            <span
+                              class="shrink-0 inline-flex items-center gap-1
+                                           font-mono text-[9px] text-amber-500
+                                           bg-amber-950/40 border border-amber-900/50 px-1.5 py-0.5"
+                            >
+                              <div class="w-1 h-1 rounded-full bg-amber-500 animate-pulse" />
+                              fila
+                            </span>
+                          )}
+                          {r.importStatus === "Importing" && (
+                            <span
+                              class="shrink-0 inline-flex items-center gap-1
+                                           font-mono text-[9px] text-ember-500
+                                           bg-forge-950/40 border border-ember-900/50 px-1.5 py-0.5"
+                            >
+                              <div class="w-1 h-1 rounded-full bg-ember-500 animate-pulse" />
+                              importando
+                            </span>
+                          )}
+                          {r.importStatus === "Failed" && (
+                            <span
+                              class="shrink-0 font-mono text-[9px] text-red-400
+                                           bg-red-950/40 border border-red-900/50 px-1.5 py-0.5"
+                            >
+                              falha
+                            </span>
+                          )}
+                        </div>
+                        <p class="font-mono text-[10px] text-stone-600 truncate">
+                          {r.id} · {r.guildName ?? "sem guilda"}
                         </p>
-                        {r.importStatus === "Queued" && (
-                          <span
-                            class="shrink-0 inline-flex items-center gap-1
-                                         font-mono text-[9px] text-amber-500
-                                         bg-amber-950/40 border border-amber-900/50 px-1.5 py-0.5"
-                          >
-                            <div class="w-1 h-1 rounded-full bg-amber-500 animate-pulse" />
-                            fila
-                          </span>
-                        )}
-                        {r.importStatus === "Importing" && (
-                          <span
-                            class="shrink-0 inline-flex items-center gap-1
-                                         font-mono text-[9px] text-ember-500
-                                         bg-forge-950/40 border border-ember-900/50 px-1.5 py-0.5"
-                          >
-                            <div class="w-1 h-1 rounded-full bg-ember-500 animate-pulse" />
-                            importando
-                          </span>
-                        )}
-                        {r.importStatus === "Failed" && (
-                          <span
-                            class="shrink-0 font-mono text-[9px] text-red-400
-                                         bg-red-950/40 border border-red-900/50 px-1.5 py-0.5"
-                          >
-                            falha
-                          </span>
-                        )}
                       </div>
-                      <p class="font-mono text-[10px] text-stone-600 truncate">
-                        {r.id} · {r.guildName ?? "sem guilda"}
+                      <p class="font-mono text-xs text-stone-400">
+                        {fmtDate(r.startTime)}
                       </p>
+                      <p class="font-mono text-xs text-stone-400">
+                        {r.fightCount}
+                      </p>
+                      <p class="font-mono text-xs text-emerald-500">
+                        {r.killCount ?? "—"}
+                      </p>
+                      <p class="font-mono text-xs text-stone-500">
+                        {dur > 0 ? `${dur}m` : "—"}
+                      </p>
+                    </A>
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2">
+                      <button
+                        onClick={() => handleResync(r.id)}
+                        disabled={resyncingId() === r.id}
+                        title="Ressincronizar"
+                        aria-label={`Ressincronizar ${r.title}`}
+                        class="p-1.5 text-stone-600 hover:text-stone-300
+                                 disabled:opacity-40 disabled:cursor-not-allowed
+                                 transition-colors"
+                      >
+                        <Show
+                          when={resyncingId() === r.id}
+                          fallback={
+                            <svg
+                              width="13"
+                              height="13"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              aria-hidden="true"
+                            >
+                              <path d="M21 2v6h-6" />
+                              <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+                              <path d="M3 22v-6h6" />
+                              <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+                            </svg>
+                          }
+                        >
+                          <svg
+                            class="animate-spin"
+                            width="13"
+                            height="13"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            aria-hidden="true"
+                          >
+                            <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" opacity="0.25" />
+                            <path d="M21 12a9 9 0 00-9-9" />
+                          </svg>
+                        </Show>
+                      </button>
                     </div>
-                    <p class="font-mono text-xs text-stone-400">
-                      {fmtDate(r.startTime)}
-                    </p>
-                    <p class="font-mono text-xs text-stone-400">
-                      {r.fightCount}
-                    </p>
-                    <p class="font-mono text-xs text-emerald-500">
-                      {r.killCount ?? "—"}
-                    </p>
-                    <p class="font-mono text-xs text-stone-500">
-                      {dur > 0 ? `${dur}m` : "—"}
-                    </p>
-                  </A>
+                  </div>
                 );
               }}
             </For>
@@ -180,6 +247,13 @@ const ReportsPage: Component = () => {
 
       <Show when={showModal()}>
         <ImportReportModal onClose={() => setShowModal(false)} />
+      </Show>
+
+      <Show when={resyncAccepted() !== null}>
+        <ImportReportModal
+          initialAccepted={resyncAccepted()!}
+          onClose={() => setResyncAccepted(null)}
+        />
       </Show>
     </div>
   );

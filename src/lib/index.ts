@@ -13,6 +13,7 @@ export {
   useReportDetail,
   useReportPerformance,
   useImportReport,
+  useResyncReport,
 } from "./queries/report";
 export { useChangePassword } from "./queries/auth";
 export { useSaveWclCredentials, useWclCredentialStatus } from "./queries/admin";

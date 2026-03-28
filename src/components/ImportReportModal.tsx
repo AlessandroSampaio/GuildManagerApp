@@ -4,9 +4,10 @@ import { useInvalidateReport } from "@/lib/queries/report";
 import { useImportWs } from "@/lib/useImportWs";
 import { ImportReportForm, importReportSchema } from "@/schemas/importReport";
 import { authStore } from "@/stores/auth";
+import { ImportAccepted } from "@/types/reports";
 import { createForm, SubmitHandler, zodForm } from "@modular-forms/solid";
 import { A } from "@solidjs/router";
-import { Component, createEffect, createSignal, Match, Switch } from "solid-js";
+import { Component, createEffect, createSignal, Match, onMount, Switch } from "solid-js";
 import ImportSummary from "./ui/ImportSummary";
 import PhaseSteps from "./ui/PhaseSteps";
 import { FormError, SubmitButton, TextField } from "./ui/TextField";
@@ -15,14 +16,21 @@ type ModalView = "form" | "progress" | "done" | "error";
 
 const ImportReportModal: Component<{
   onClose: () => void;
+  initialAccepted?: ImportAccepted;
 }> = (p) => {
   const importMutation = useImportReport();
   const invalidateReport = useInvalidateReport();
   const ws = useImportWs();
 
-  const [view, setView] = createSignal<ModalView>("form");
-  const [reportCode, setReportCode] = createSignal("");
+  const [view, setView] = createSignal<ModalView>(p.initialAccepted ? "progress" : "form");
+  const [reportCode, setReportCode] = createSignal(p.initialAccepted?.reportCode ?? "");
   const [submitError, setSubmitError] = createSignal<string | null>(null);
+
+  onMount(() => {
+    if (p.initialAccepted) {
+      ws.connect(p.initialAccepted.reportCode);
+    }
+  });
 
   const [_, { Form, Field }] = createForm<ImportReportForm>({
     validate: zodForm(importReportSchema),
@@ -88,7 +96,7 @@ const ImportReportModal: Component<{
               id="import-modal-title"
               class="font-display text-sm text-stone-100 tracking-wide"
             >
-              Importar Report
+              {p.initialAccepted ? "Ressincronizar Report" : "Importar Report"}
             </h3>
           </div>
           <button

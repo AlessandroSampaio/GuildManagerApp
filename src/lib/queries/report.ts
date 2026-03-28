@@ -88,6 +88,17 @@ export function useImportReport() {
   }));
 }
 
+export function useResyncReport() {
+  const qc = useQueryClient();
+  return useMutation(() => ({
+    mutationFn: (id: string) => reportsApi.update(id),
+    onSuccess: (data: ImportAccepted) => {
+      qc.invalidateQueries({ queryKey: reportKeys.lists() });
+      qc.invalidateQueries({ queryKey: reportKeys.detail(data.reportCode) });
+    },
+  }));
+}
+
 export function useInvalidateReport() {
   const qc = useQueryClient();
   return (reportCode: string) => {
