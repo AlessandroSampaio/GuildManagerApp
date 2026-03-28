@@ -5,6 +5,11 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/)
 
 ## [Unreleased]
 
+## [0.3.5] - 2026-03-28
+
+### Added
+- Adiciona função de ressincronização/reimport logs
+
 ## [0.3.4] - 2026-03-27
 ### Added
 - Adiciona detalhamento de log de auditoria ao click
