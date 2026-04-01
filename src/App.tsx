@@ -22,6 +22,7 @@ const WclCallbackPage = lazy(() => import("@/pages/WclCallbackPage"));
 const PenaltyEventsPage = lazy(() => import("@/pages/PenaltyEventsPage"));
 const GuildsPage = lazy(() => import("@/pages/GuildsPage"));
 const AuditLogPage = lazy(() => import("@/pages/AuditLogPage"));
+const CharacterDetailsPage = lazy(() => import("@/pages/CharacterDetailsPage"));
 
 const RootRedirect: Component = () => {
   const nav = useNavigate();
@@ -79,6 +80,7 @@ const App: Component = () => (
         <Route path="/player-scoring/:weekId" component={PlayerScoringPage} />
         <Route path="/penalty-events" component={PenaltyEventsPage} />
         <Route path="/guilds" component={GuildsPage} />
+        <Route path="/characters/:id" component={CharacterDetailsPage} />
         <Route path="/settings" component={SettingsPage} />
         <Route
           path="/audit-log"

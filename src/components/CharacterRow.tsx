@@ -1,5 +1,6 @@
 import { classColor } from "@/helpers/colors";
 import { PlayerCharacter } from "@/types/player";
+import { A } from "@solidjs/router";
 import { Component, Show } from "solid-js";
 import { Spinner } from "./ui/Spinner";
 
@@ -21,7 +22,10 @@ export const CharacterRow: Component<{
       aria-hidden="true"
     />
 
-    <div class="flex-1 min-w-0">
+    <A
+      href={`/app/characters/${p.char.id}`}
+      class="flex-1 min-w-0 hover:opacity-80 transition-opacity"
+    >
       <p class={`font-semibold text-sm truncate ${classColor(p.char.class)}`}>
         {p.char.name}
       </p>
@@ -29,7 +33,7 @@ export const CharacterRow: Component<{
         {p.char.class} · {p.char.server}
         {p.char.guildName ? ` · ${p.char.guildName}` : ""}
       </p>
-    </div>
+    </A>
 
     <span class="font-mono text-[9px] text-stone-700 shrink-0">
       #{p.char.id}

@@ -1,6 +1,6 @@
 import { PagedResult } from "@/types/common";
 import { req } from "./client";
-import { CharacterSearchResult } from "@/types/characters";
+import { CharacterSearchResult, RaiderIoProfile } from "@/types/characters";
 
 export const charactersApi = {
   search: (q?: string, className?: string, page = 1, pageSize = 20) => {
@@ -13,4 +13,7 @@ export const charactersApi = {
       `/api/characters/search?${params}`,
     );
   },
+
+  getRaiderIoProfile: (id: number) =>
+    req<RaiderIoProfile>(`/api/characters/${id}/raider-io/profile`),
 };

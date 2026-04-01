@@ -2,6 +2,14 @@ import { useQuery } from "@tanstack/solid-query";
 import { characterKeys } from "../query-keys";
 import { charactersApi } from "@/api/characters";
 
+export function useCharacterRaiderIo(id: () => number) {
+  return useQuery(() => ({
+    queryKey: characterKeys.raiderIo(id()),
+    queryFn: () => charactersApi.getRaiderIoProfile(id()),
+    staleTime: 5 * 60 * 1000,
+  }));
+}
+
 /**
  * Searches characters by name substring and/or exact class name.
  * Enabled only when query or class is non-empty (≥1 char).
