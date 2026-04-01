@@ -5,6 +5,9 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/)
 
 ## [Unreleased]
 
+### Fixed
+- Resolvida sincronização durante adição/remoção de penalidades em uma `RaidWeek`
+
 ## [0.3.5] - 2026-03-28
 
 ### Added
