@@ -186,21 +186,23 @@ const Sidebar: Component = () => {
   return (
     <aside class="w-[13.3rem] bg-void-950 border-r border-void-700 flex flex-col shrink-0">
       {/* Avatar */}
-      <div class="p-4 border-b border-void-700">
-        <div class="flex items-center gap-3">
-          <div class="size-8 border border-ember-800 bg-forge-900 flex items-center justify-center font-display text-xs text-ember-600 animate-ember-pulse shrink-0">
-            {initials()}
-          </div>
-          <div class="min-w-0">
-            <p class="text-stone-100 font-bold text-sm truncate leading-tight">
-              {authStore.user()?.username}
-            </p>
-            <p class="font-mono text-[10px] text-stone-500 truncate">
-              {authStore.user()?.role}
-            </p>
-          </div>
+      <A
+        href="/app/profile"
+        class="p-4 border-b border-void-700 flex items-center gap-3
+               hover:bg-void-800 transition-colors group"
+      >
+        <div class="size-8 border border-ember-800 bg-forge-900 flex items-center justify-center font-display text-xs text-ember-600 animate-ember-pulse shrink-0">
+          {initials()}
         </div>
-      </div>
+        <div class="min-w-0">
+          <p class="text-stone-100 font-bold text-sm truncate leading-tight group-hover:text-ember-500 transition-colors">
+            {authStore.user()?.username}
+          </p>
+          <p class="font-mono text-[10px] text-stone-500 truncate">
+            {authStore.user()?.role}
+          </p>
+        </div>
+      </A>
 
       {/* Navigation */}
       <nav class="flex-1 p-2 space-y-px overflow-y-auto">
