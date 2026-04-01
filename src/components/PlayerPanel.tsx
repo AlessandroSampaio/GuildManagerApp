@@ -232,9 +232,13 @@ export const PlayerPanel: Component<{
                 <For each={detail.data!.characters}>
                   {(char) => (
                     <CharacterRow
-                      char={char}
-                      playerId={props.playerId}
-                      onRemove={handleRemoveChar}
+                      characterId={char.id}
+                      name={char.name}
+                      class={char.class}
+                      server={char.server}
+                      guildName={char.guildName}
+                      displayId={char.id}
+                      onRemove={() => handleRemoveChar(char.id)}
                       removing={removingId() === char.id}
                     />
                   )}

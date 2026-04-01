@@ -12,7 +12,7 @@ import { useQueryClient } from "@tanstack/solid-query";
 import { SkeletonList } from "@/components/ui/Skeleton";
 import { Spinner } from "@/components/ui/Spinner";
 import { GuildRow } from "@/components/GuildRow";
-import { RosterRow } from "@/components/RosterRow";
+import { CharacterRow } from "@/components/CharacterRow";
 import { GuildSyncProgress } from "@/components/GuildSyncProgress";
 
 const GuildsPage: Component = () => {
@@ -354,7 +354,17 @@ const GuildsPage: Component = () => {
                   }
                 >
                   <For each={filteredRoster()}>
-                    {(char) => <RosterRow char={char} />}
+                    {(char) => (
+                    <CharacterRow
+                      characterId={char.characterId}
+                      name={char.characterName}
+                      class={char.class}
+                      server={char.server}
+                      displayId={char.id}
+                      playerName={char.playerName}
+                      playerId={char.playerId}
+                    />
+                  )}
                   </For>
                 </Show>
               </Show>
