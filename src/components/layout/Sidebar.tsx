@@ -145,23 +145,6 @@ const NAV = [
       </svg>
     ),
   },
-  {
-    href: "/app/settings",
-    label: "Configurações",
-    icon: (active: boolean) => (
-      <svg
-        width="15"
-        height="15"
-        viewBox="0 0 15 15"
-        fill="none"
-        stroke={active ? "#c8741c" : "currentColor"}
-        stroke-width="1.2"
-      >
-        <circle cx="7.5" cy="7.5" r="2.2" />
-        <path d="M7.5 1v1.5M7.5 12.5V14M1 7.5h1.5M12.5 7.5H14M2.7 2.7l1.06 1.06M11.24 11.24l1.06 1.06M2.7 12.3l1.06-1.06M11.24 3.76l1.06-1.06" />
-      </svg>
-    ),
-  },
 ];
 
 const Sidebar: Component = () => {
@@ -231,32 +214,58 @@ const Sidebar: Component = () => {
         {/* Admin-only items */}
         <Show when={isAdmin()}>
           {() => {
-            const active = () => loc.pathname.startsWith("/app/audit-log");
+            const activeAudit = () => loc.pathname.startsWith("/app/audit-log");
+            const activeSettings = () => loc.pathname.startsWith("/app/settings");
             return (
-              <A
-                href="/app/audit-log"
-                class={`flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold tracking-wide
-                        transition-all duration-150 border-l-2
-                        ${
-                          active()
-                            ? "bg-forge-900/40 text-ember-600 border-ember-700"
-                            : "text-stone-500 hover:text-stone-200 hover:bg-void-800 border-transparent"
-                        }`}
-              >
-                <svg
-                  width="15"
-                  height="15"
-                  viewBox="0 0 15 15"
-                  fill="none"
-                  stroke={active() ? "#c8741c" : "currentColor"}
-                  stroke-width="1.2"
+              <>
+                <A
+                  href="/app/settings"
+                  class={`flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold tracking-wide
+                          transition-all duration-150 border-l-2
+                          ${
+                            activeSettings()
+                              ? "bg-forge-900/40 text-ember-600 border-ember-700"
+                              : "text-stone-500 hover:text-stone-200 hover:bg-void-800 border-transparent"
+                          }`}
                 >
-                  <path d="M7.5 1.5L2 4v4c0 3.5 2.5 5.8 5.5 6 3-.2 5.5-2.5 5.5-6V4z" />
-                  <line x1="5" y1="7.5" x2="10" y2="7.5" />
-                  <line x1="7.5" y1="5" x2="7.5" y2="10" />
-                </svg>
-                Audit Log
-              </A>
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 15 15"
+                    fill="none"
+                    stroke={activeSettings() ? "#c8741c" : "currentColor"}
+                    stroke-width="1.2"
+                  >
+                    <circle cx="7.5" cy="7.5" r="2.2" />
+                    <path d="M7.5 1v1.5M7.5 12.5V14M1 7.5h1.5M12.5 7.5H14M2.7 2.7l1.06 1.06M11.24 11.24l1.06 1.06M2.7 12.3l1.06-1.06M11.24 3.76l1.06-1.06" />
+                  </svg>
+                  Configurações
+                </A>
+                <A
+                  href="/app/audit-log"
+                  class={`flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold tracking-wide
+                          transition-all duration-150 border-l-2
+                          ${
+                            activeAudit()
+                              ? "bg-forge-900/40 text-ember-600 border-ember-700"
+                              : "text-stone-500 hover:text-stone-200 hover:bg-void-800 border-transparent"
+                          }`}
+                >
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 15 15"
+                    fill="none"
+                    stroke={activeAudit() ? "#c8741c" : "currentColor"}
+                    stroke-width="1.2"
+                  >
+                    <path d="M7.5 1.5L2 4v4c0 3.5 2.5 5.8 5.5 6 3-.2 5.5-2.5 5.5-6V4z" />
+                    <line x1="5" y1="7.5" x2="10" y2="7.5" />
+                    <line x1="7.5" y1="5" x2="7.5" y2="10" />
+                  </svg>
+                  Audit Log
+                </A>
+              </>
             );
           }}
         </Show>
