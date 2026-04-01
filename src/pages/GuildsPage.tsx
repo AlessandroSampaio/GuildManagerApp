@@ -363,6 +363,7 @@ const GuildsPage: Component = () => {
                       displayId={char.id}
                       playerName={char.playerName}
                       playerId={char.playerId}
+                      href={`/app/characters/${char.characterId}`}
                     />
                   )}
                   </For>

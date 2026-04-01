@@ -3,11 +3,14 @@ import { A } from "@solidjs/router";
 import { Component, Show } from "solid-js";
 import { Spinner } from "./ui/Spinner";
 
+const infoClass = "flex-1 min-w-0";
+
 export const CharacterRow: Component<{
   characterId: number;
   name: string;
   class: string;
   server: string;
+  href?: string;
   displayId?: number;
   guildName?: string | null;
   playerName?: string | null;
@@ -25,18 +28,30 @@ export const CharacterRow: Component<{
       aria-hidden="true"
     />
 
-    <A
-      href={`/app/characters/${p.characterId}`}
-      class="flex-1 min-w-0 hover:opacity-80 transition-opacity"
+    <Show
+      when={p.href}
+      fallback={
+        <div class={infoClass}>
+          <p class={`font-semibold text-sm truncate ${classColor(p.class)}`}>
+            {p.name}
+          </p>
+          <p class="font-mono text-[10px] text-stone-600 truncate">
+            {p.class} · {p.server}
+            {p.guildName ? ` · ${p.guildName}` : ""}
+          </p>
+        </div>
+      }
     >
-      <p class={`font-semibold text-sm truncate ${classColor(p.class)}`}>
-        {p.name}
-      </p>
-      <p class="font-mono text-[10px] text-stone-600 truncate">
-        {p.class} · {p.server}
-        {p.guildName ? ` · ${p.guildName}` : ""}
-      </p>
-    </A>
+      <A href={p.href!} class={`${infoClass} hover:opacity-80 transition-opacity`}>
+        <p class={`font-semibold text-sm truncate ${classColor(p.class)}`}>
+          {p.name}
+        </p>
+        <p class="font-mono text-[10px] text-stone-600 truncate">
+          {p.class} · {p.server}
+          {p.guildName ? ` · ${p.guildName}` : ""}
+        </p>
+      </A>
+    </Show>
 
     <Show when={p.playerName && p.playerId}>
       <span class="font-mono text-[9px] bg-void-700 border border-void-600 text-stone-400 px-1.5 py-0.5 shrink-0 truncate max-w-[7rem]">
