@@ -56,7 +56,11 @@ const NAV = [
         stroke-width="1.2"
       >
         <path d="M7.5 1.5L2 4v4.5c0 3.2 2.5 5.8 5.5 6 3-.2 5.5-2.8 5.5-6V4z" />
-        <path d="M5.5 7.5l1.5 1.5 2.5-2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path
+          d="M5.5 7.5l1.5 1.5 2.5-2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
       </svg>
     ),
   },
@@ -139,9 +143,30 @@ const NAV = [
         stroke-linejoin="round"
       >
         <line x1="1" y1="13.5" x2="14" y2="13.5" />
-        <rect x="2" y="8" width="2.5" height="5.5" rx="0.3" fill={active ? "#c8741c" : "none"} />
-        <rect x="6.25" y="4.5" width="2.5" height="9" rx="0.3" fill={active ? "#c8741c" : "none"} />
-        <rect x="10.5" y="1.5" width="2.5" height="12" rx="0.3" fill={active ? "#c8741c" : "none"} />
+        <rect
+          x="2"
+          y="8"
+          width="2.5"
+          height="5.5"
+          rx="0.3"
+          fill={active ? "#c8741c" : "none"}
+        />
+        <rect
+          x="6.25"
+          y="4.5"
+          width="2.5"
+          height="9"
+          rx="0.3"
+          fill={active ? "#c8741c" : "none"}
+        />
+        <rect
+          x="10.5"
+          y="1.5"
+          width="2.5"
+          height="12"
+          rx="0.3"
+          fill={active ? "#c8741c" : "none"}
+        />
       </svg>
     ),
   },
@@ -165,6 +190,8 @@ const Sidebar: Component = () => {
 
   const initials = () => (authStore.user()?.username ?? "?")[0].toUpperCase();
   const isAdmin = () => authStore.user()?.role?.toLowerCase() === "admin";
+  const activeAudit = () => loc.pathname.startsWith("/app/audit-log");
+  const activeSettings = () => loc.pathname.startsWith("/app/settings");
 
   return (
     <aside class="w-[13.3rem] bg-void-950 border-r border-void-700 flex flex-col shrink-0">
@@ -213,61 +240,53 @@ const Sidebar: Component = () => {
 
         {/* Admin-only items */}
         <Show when={isAdmin()}>
-          {() => {
-            const activeAudit = () => loc.pathname.startsWith("/app/audit-log");
-            const activeSettings = () => loc.pathname.startsWith("/app/settings");
-            return (
-              <>
-                <A
-                  href="/app/settings"
-                  class={`flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold tracking-wide
-                          transition-all duration-150 border-l-2
-                          ${
-                            activeSettings()
-                              ? "bg-forge-900/40 text-ember-600 border-ember-700"
-                              : "text-stone-500 hover:text-stone-200 hover:bg-void-800 border-transparent"
-                          }`}
-                >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 15 15"
-                    fill="none"
-                    stroke={activeSettings() ? "#c8741c" : "currentColor"}
-                    stroke-width="1.2"
-                  >
-                    <circle cx="7.5" cy="7.5" r="2.2" />
-                    <path d="M7.5 1v1.5M7.5 12.5V14M1 7.5h1.5M12.5 7.5H14M2.7 2.7l1.06 1.06M11.24 11.24l1.06 1.06M2.7 12.3l1.06-1.06M11.24 3.76l1.06-1.06" />
-                  </svg>
-                  Configurações
-                </A>
-                <A
-                  href="/app/audit-log"
-                  class={`flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold tracking-wide
-                          transition-all duration-150 border-l-2
-                          ${
-                            activeAudit()
-                              ? "bg-forge-900/40 text-ember-600 border-ember-700"
-                              : "text-stone-500 hover:text-stone-200 hover:bg-void-800 border-transparent"
-                          }`}
-                >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 15 15"
-                    fill="none"
-                    stroke={activeAudit() ? "#c8741c" : "currentColor"}
-                    stroke-width="1.2"
-                  >
-                    <path d="M7.5 1.5L2 4v4c0 3.5 2.5 5.8 5.5 6 3-.2 5.5-2.5 5.5-6V4z" />
-                    <line x1="5" y1="7.5" x2="10" y2="7.5" />
-                    <line x1="7.5" y1="5" x2="7.5" y2="10" />
-                  </svg>
-                  Audit Log
-                </A>
-              </>
-            );
-          }}
+          <A
+            href="/app/settings"
+            class={`flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold tracking-wide
+                    transition-all duration-150 border-l-2
+                    ${
+                      activeSettings()
+                        ? "bg-forge-900/40 text-ember-600 border-ember-700"
+                        : "text-stone-500 hover:text-stone-200 hover:bg-void-800 border-transparent"
+                    }`}
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 15 15"
+              fill="none"
+              stroke={activeSettings() ? "#c8741c" : "currentColor"}
+              stroke-width="1.2"
+            >
+              <circle cx="7.5" cy="7.5" r="2.2" />
+              <path d="M7.5 1v1.5M7.5 12.5V14M1 7.5h1.5M12.5 7.5H14M2.7 2.7l1.06 1.06M11.24 11.24l1.06 1.06M2.7 12.3l1.06-1.06M11.24 3.76l1.06-1.06" />
+            </svg>
+            Configurações
+          </A>
+          <A
+            href="/app/audit-log"
+            class={`flex items-center gap-2.5 px-3 py-2.5 text-sm font-semibold tracking-wide
+                    transition-all duration-150 border-l-2
+                    ${
+                      activeAudit()
+                        ? "bg-forge-900/40 text-ember-600 border-ember-700"
+                        : "text-stone-500 hover:text-stone-200 hover:bg-void-800 border-transparent"
+                    }`}
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 15 15"
+              fill="none"
+              stroke={activeAudit() ? "#c8741c" : "currentColor"}
+              stroke-width="1.2"
+            >
+              <path d="M7.5 1.5L2 4v4c0 3.5 2.5 5.8 5.5 6 3-.2 5.5-2.5 5.5-6V4z" />
+              <line x1="5" y1="7.5" x2="10" y2="7.5" />
+              <line x1="7.5" y1="5" x2="7.5" y2="10" />
+            </svg>
+            Audit Log
+          </A>
         </Show>
       </nav>
 
