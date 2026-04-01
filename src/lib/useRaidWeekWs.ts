@@ -1,7 +1,7 @@
 import { createEffect, createSignal, onCleanup } from "solid-js";
 import { useQueryClient } from "@tanstack/solid-query";
 import { authStore } from "@/stores/auth";
-import { raidWeekKeys } from "@/lib/query-keys";
+import { penaltyKeys, raidWeekKeys } from "@/lib/query-keys";
 
 const BASE = import.meta.env.VITE_API_URL ?? "https://localhost:5000";
 
@@ -84,6 +84,7 @@ export function useRaidWeekWs(
         case "penaltyAdded":
         case "penaltyRemoved":
           qc.invalidateQueries({ queryKey: raidWeekKeys.detail(id) });
+          qc.invalidateQueries({ queryKey: penaltyKeys.weekPenalties(id) });
           break;
       }
     };
