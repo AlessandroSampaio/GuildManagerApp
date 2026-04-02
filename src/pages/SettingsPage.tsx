@@ -1,3 +1,4 @@
+import BNetCredentialsCard from "@/components/BNetCredentialsCard";
 import SectionHeader from "@/components/ui/SectionHeader";
 import WclCredentialsCard from "@/components/WclCredentialsCard";
 import WclOAuthCard from "@/components/WclOAuthCard";
@@ -14,6 +15,7 @@ const SettingsPage = () => {
 
         <Show when={isAdmin()}>
           <WclCredentialsCard />
+          <BNetCredentialsCard />
         </Show>
         <WclOAuthCard />
       </div>

@@ -1,3 +1,4 @@
+import BNetOAuthCard from "@/components/BNetOAuthCard";
 import ChangePasswordCard from "@/components/ChangePasswordCard";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { authStore } from "@/stores/auth";
@@ -35,6 +36,7 @@ const ProfilePage = () => (
       </div>
 
       <ChangePasswordCard />
+      <BNetOAuthCard />
     </div>
   </div>
 );

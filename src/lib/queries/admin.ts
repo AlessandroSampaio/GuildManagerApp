@@ -20,3 +20,22 @@ export function useWclCredentialStatus() {
     retry: 1,
   }));
 }
+
+export function useBNetCredentialStatus() {
+  return useQuery(() => ({
+    queryKey: adminKeys.bnetCredentialsStatus(),
+    queryFn: () => adminApi.getBNetCredentialStatus(),
+    staleTime: 30 * 1000,
+    retry: 1,
+  }));
+}
+
+export function useSaveBNetCredentials() {
+  const qc = useQueryClient();
+  return useMutation(() => ({
+    mutationFn: adminApi.saveBNetCredentials,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: adminKeys.bnetCredentialsStatus() });
+    },
+  }));
+}

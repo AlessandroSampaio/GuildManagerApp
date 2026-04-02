@@ -1,3 +1,4 @@
+import { BNetCredentialRequest, BNetCredentialStatus } from "@/types/bnet";
 import { WclCredentialRequest, WclCredentialStatus } from "@/types/wcl-auth";
 import { req } from "./client";
 import {
@@ -15,6 +16,15 @@ export const adminApi = {
       method: "PUT",
       body: JSON.stringify(body),
     }),
+  getBNetCredentialStatus: () =>
+    req<BNetCredentialStatus>("/api/admin/bnet-credentials/status"),
+
+  saveBNetCredentials: (body: BNetCredentialRequest) =>
+    req<BNetCredentialStatus>("/api/admin/bnet-credentials", {
+      method: "PUT",
+      body: JSON.stringify(body),
+    }),
+
   getScoringSettings: () => req<ScoringSettings>("/api/admin/scoring-settings"),
   saveScoringSettings: (tiers: ScoringTierRequest[]) =>
     req<ScoringSettings>("/api/admin/scoring-settings", {

@@ -43,6 +43,9 @@ export const adminKeys = {
 
   /** Status das credenciais WCL (ClientId/Secret) — visível apenas para Admin. */
   wclCredentialsStatus: () => ["admin", "wcl-credentials", "status"] as const,
+
+  /** Status das credenciais BNet (ClientId/Secret) — visível apenas para Admin. */
+  bnetCredentialsStatus: () => ["admin", "bnet-credentials", "status"] as const,
 } as const;
 
 export const scoringKeys = {
