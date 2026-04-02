@@ -19,6 +19,7 @@ const PlayersPage = lazy(() => import("@/pages/PlayersPage"));
 const RaidWeeksPage = lazy(() => import("@/pages/RaidWeeksPage"));
 const PlayerScoringPage = lazy(() => import("@/pages/PlayerScoringPage"));
 const WclCallbackPage = lazy(() => import("@/pages/WclCallbackPage"));
+const BNetCallbackPage = lazy(() => import("@/pages/BNetCallbackPage"));
 const PenaltyEventsPage = lazy(() => import("@/pages/PenaltyEventsPage"));
 const GuildsPage = lazy(() => import("@/pages/GuildsPage"));
 const CoresPage = lazy(() => import("@/pages/CoresPage"));
@@ -65,6 +66,7 @@ const App: Component = () => (
       <Route path="/" component={RootRedirect} />
       <Route path={"/login"} component={LoginShell} />
       <Route path="/wcl-callback" component={WclCallbackPage} />
+      <Route path="/bnet-callback" component={BNetCallbackPage} />
       <Route
         path="/app"
         component={(props) => (
