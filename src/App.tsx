@@ -21,6 +21,7 @@ const PlayerScoringPage = lazy(() => import("@/pages/PlayerScoringPage"));
 const WclCallbackPage = lazy(() => import("@/pages/WclCallbackPage"));
 const PenaltyEventsPage = lazy(() => import("@/pages/PenaltyEventsPage"));
 const GuildsPage = lazy(() => import("@/pages/GuildsPage"));
+const CoresPage = lazy(() => import("@/pages/CoresPage"));
 const AuditLogPage = lazy(() => import("@/pages/AuditLogPage"));
 const CharacterDetailsPage = lazy(() => import("@/pages/CharacterDetailsPage"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
@@ -81,6 +82,7 @@ const App: Component = () => (
         <Route path="/player-scoring/:weekId" component={PlayerScoringPage} />
         <Route path="/penalty-events" component={PenaltyEventsPage} />
         <Route path="/guilds" component={GuildsPage} />
+        <Route path="/cores" component={CoresPage} />
         <Route path="/characters/:id" component={CharacterDetailsPage} />
         <Route path="/profile" component={ProfilePage} />
         <Route path="/settings" component={SettingsPage} />

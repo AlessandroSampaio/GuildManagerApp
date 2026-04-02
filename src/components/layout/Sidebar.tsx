@@ -65,6 +65,26 @@ const NAV = [
     ),
   },
   {
+    href: "/app/cores",
+    label: "Cores",
+    icon: (active: boolean) => (
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 15 15"
+        fill="none"
+        stroke={active ? "#c8741c" : "currentColor"}
+        stroke-width="1.2"
+      >
+        <circle cx="7.5" cy="5" r="2.5" />
+        <circle cx="3" cy="11.5" r="2" />
+        <circle cx="12" cy="11.5" r="2" />
+        <line x1="7.5" y1="7.5" x2="3" y2="9.5" />
+        <line x1="7.5" y1="7.5" x2="12" y2="9.5" />
+      </svg>
+    ),
+  },
+  {
     href: "/app/players",
     label: "Jogadores",
     icon: (active: boolean) => (

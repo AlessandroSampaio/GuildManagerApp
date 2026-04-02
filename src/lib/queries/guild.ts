@@ -2,6 +2,14 @@ import { useMutation, useQuery } from "@tanstack/solid-query";
 import { guildsApi } from "@/api/guild";
 import { guildKeys } from "../query-keys";
 
+export function useAllGuilds() {
+  return useQuery(() => ({
+    queryKey: ["guilds", "all"] as const,
+    queryFn: () => guildsApi.list(1, 200),
+    staleTime: 5 * 60 * 1000,
+  }));
+}
+
 export function useGuildList(page: () => number) {
   return useQuery(() => ({
     queryKey: guildKeys.list(page()),

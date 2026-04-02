@@ -95,3 +95,11 @@ export const guildKeys = {
   list: (page: number) => ["guilds", "list", page] as const,
   roster: (id: number) => ["guilds", "roster", id] as const,
 } as const;
+
+export const coreKeys = {
+  all: () => ["cores"] as const,
+  lists: () => ["cores", "list"] as const,
+  list: (page: number) => ["cores", "list", page] as const,
+  details: () => ["cores", "detail"] as const,
+  detail: (id: number) => ["cores", "detail", id] as const,
+} as const;
