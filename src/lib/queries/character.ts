@@ -2,6 +2,14 @@ import { useQuery } from "@tanstack/solid-query";
 import { characterKeys } from "../query-keys";
 import { charactersApi } from "@/api/characters";
 
+export function useMyCharacters() {
+  return useQuery(() => ({
+    queryKey: characterKeys.mine(),
+    queryFn: () => charactersApi.getMyCharacters(),
+    staleTime: 60_000,
+  }));
+}
+
 export function useCharacterRaiderIo(id: () => number) {
   return useQuery(() => ({
     queryKey: characterKeys.raiderIo(id()),

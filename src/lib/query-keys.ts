@@ -76,6 +76,7 @@ export const raidWeekKeys = {
 
 export const characterKeys = {
   all: () => ["characters"] as const,
+  mine: () => ["characters", "mine"] as const,
   search: (q: string, cls: string) => ["characters", "search", q, cls] as const,
   raiderIo: (id: number) => ["characters", "raider-io", id] as const,
 } as const;

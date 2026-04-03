@@ -1,8 +1,11 @@
 import { PagedResult } from "@/types/common";
 import { req } from "./client";
-import { CharacterSearchResult, RaiderIoProfile } from "@/types/characters";
+import { Character, CharacterSearchResult, RaiderIoProfile } from "@/types/characters";
 
 export const charactersApi = {
+  getMyCharacters: () => req<Character[]>("/api/profile/characters"),
+
+
   search: (q?: string, className?: string, page = 1, pageSize = 20) => {
     const params = new URLSearchParams();
     if (q) params.set("q", q);
