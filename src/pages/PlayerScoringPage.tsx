@@ -1,7 +1,8 @@
 import { ApiError } from "@/api/client";
 import { penaltyApi } from "@/api/penalty";
 import { playerScoringApi } from "@/api/player-scoring";
-import { PlayerCard } from "@/components/PlayerCard";
+import PlayerScoringDetailedView from "@/components/PlayerScoringDetailedView";
+import PlayerScoringSimplifiedView, { SimplifiedRow } from "@/components/PlayerScoringSimplifiedView";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
 import { ReportStatusBadge } from "@/components/ui/ReportStatusBadge";
@@ -13,7 +14,7 @@ import { exportRaidWeekXlsx } from "@/lib/export-xlsx";
 import { PlayerWeekPenalty } from "@/types/penalty";
 import { PlayerScoringResult } from "@/types/player-scoring";
 import { useNavigate, useParams } from "@solidjs/router";
-import { Component, createSignal, For, onMount, Show } from "solid-js";
+import { Component, createMemo, createSignal, For, onMount, Show } from "solid-js";
 
 const PlayerScoringPage: Component = () => {
   const params = useParams<{ weekId: string }>();
@@ -25,6 +26,9 @@ const PlayerScoringPage: Component = () => {
   const [showReports, setShowReports] = createSignal(false);
   const [exporting, setExporting] = createSignal(false);
   const [exportError, setExportError] = createSignal<string | null>(null);
+  const [viewMode, setViewMode] = createSignal<"detailed" | "simplified">("detailed");
+  const [penalties, setPenalties] = createSignal<PlayerWeekPenalty[]>([]);
+  const [penaltiesLoaded, setPenaltiesLoaded] = createSignal(false);
 
   const weekId = () => parseInt(params.weekId, 10);
   const week = () => result()?.raidWeek;
@@ -44,6 +48,61 @@ const PlayerScoringPage: Component = () => {
     }
   }
 
+  async function loadPenalties() {
+    if (penaltiesLoaded() || !week()?.id) return;
+    try {
+      const data = await penaltyApi.listWeekPenalties(week()!.id);
+      setPenalties(data);
+      setPenaltiesLoaded(true);
+    } catch {
+      // silently fail — penalties show as 0
+    }
+  }
+
+  async function switchToSimplified() {
+    setViewMode("simplified");
+    await loadPenalties();
+  }
+
+  const simplifiedData = createMemo(() => {
+    const players = result()?.players ?? [];
+    if (players.length === 0) return { fightNames: [] as string[], rows: [] as SimplifiedRow[] };
+
+    const fightNameSet = new Map<string, true>();
+    for (const player of players) {
+      for (const char of player.characters) {
+        for (const fight of char.fights) {
+          fightNameSet.set(fight.fightName, true);
+        }
+      }
+    }
+    const fightNames = [...fightNameSet.keys()];
+
+    const penaltyByPlayer = new Map<number, number>();
+    for (const p of penalties()) {
+      const prev = penaltyByPlayer.get(p.playerId) ?? 0;
+      penaltyByPlayer.set(p.playerId, prev + p.points);
+    }
+
+    const rows = players.map((player) => {
+      const fightPoints = new Map<string, number>();
+      for (const char of player.characters) {
+        for (const fight of char.fights) {
+          const prev = fightPoints.get(fight.fightName) ?? 0;
+          fightPoints.set(fight.fightName, prev + (fight.points ?? 0));
+        }
+      }
+      return {
+        playerName: player.playerName,
+        totalPoints: player.totalPoints,
+        fightPoints,
+        penaltyTotal: penaltyByPlayer.get(player.playerId) ?? 0,
+      };
+    });
+
+    return { fightNames, rows };
+  });
+
   onMount(() => {
     if (!Number.isNaN(weekId())) {
       calculate();
@@ -52,8 +111,8 @@ const PlayerScoringPage: Component = () => {
 
   return (
     <div class="flex-1 overflow-y-auto p-8">
-      <div class="max-w-4xl space-y-6">
-        <div class="flex items-start justify-between">
+      <div class="space-y-6">
+        <div class="max-w-4xl flex items-start justify-between">
           <div>
             <button
               onClick={() => nav("/app/raid-weeks")}
@@ -176,19 +235,21 @@ const PlayerScoringPage: Component = () => {
         </div>
 
         <Show when={loading() && !result()}>
-          <div class="flex items-center gap-3 text-stone-500 font-mono text-xs py-6">
+          <div class="max-w-4xl flex items-center gap-3 text-stone-500 font-mono text-xs py-6">
             <Spinner size={16} />
             Calculando pontuação dos players…
           </div>
         </Show>
 
         <Show when={error()}>
-          <ErrorBanner message={error()!} />
+          <div class="max-w-4xl">
+            <ErrorBanner message={error()!} />
+          </div>
         </Show>
 
         <Show when={result()}>
           {/* Summary bar */}
-          <div class="grid grid-cols-4 gap-3">
+          <div class="max-w-4xl grid grid-cols-4 gap-3">
             {(
               [
                 ["Players", result()!.players.length.toString()],
@@ -216,7 +277,7 @@ const PlayerScoringPage: Component = () => {
           </div>
 
           {/* Scoring settings snapshot */}
-          <div class="flex items-center gap-3">
+          <div class="max-w-4xl flex items-center gap-3">
             <p class="label-xs">Configuração de scoring usada:</p>
             <div class="flex gap-2 flex-wrap">
               <For
@@ -238,23 +299,56 @@ const PlayerScoringPage: Component = () => {
 
           {/* No players */}
           <Show when={result()!.players.length === 0}>
+            <div class="max-w-4xl">
             <EmptyState
               title="Nenhum player com pontuação"
               subtitle="Os reports avaliados não têm PerformanceEntries vinculadas a Players."
             />
-          </Show>
-
-          {/* Player ranking */}
-          <Show when={result()!.players.length > 0}>
-            <div class="space-y-3">
-              <For each={result()!.players}>
-                {(player, i) => <PlayerCard player={player} rank={i() + 1} />}
-              </For>
             </div>
           </Show>
 
+          {/* View mode toggle + player list */}
+          <Show when={result()!.players.length > 0}>
+            {/* Toggle */}
+            <div class="flex items-center gap-1 bg-void-800/60 border border-void-700 p-0.5 w-fit">
+              <button
+                onClick={() => setViewMode("detailed")}
+                class={`font-mono text-[10px] tracking-wider px-3 py-1 transition-colors ${
+                  viewMode() === "detailed"
+                    ? "bg-void-600 text-stone-200"
+                    : "text-stone-500 hover:text-stone-300"
+                }`}
+              >
+                DETALHADA
+              </button>
+              <button
+                onClick={switchToSimplified}
+                class={`font-mono text-[10px] tracking-wider px-3 py-1 transition-colors ${
+                  viewMode() === "simplified"
+                    ? "bg-void-600 text-stone-200"
+                    : "text-stone-500 hover:text-stone-300"
+                }`}
+              >
+                SIMPLIFICADA
+              </button>
+            </div>
+
+            {/* Detailed view */}
+            <Show when={viewMode() === "detailed"}>
+              <PlayerScoringDetailedView players={result()!.players} />
+            </Show>
+
+            {/* Simplified grid view */}
+            <Show when={viewMode() === "simplified"}>
+              <PlayerScoringSimplifiedView
+                fightNames={simplifiedData().fightNames}
+                rows={simplifiedData().rows}
+              />
+            </Show>
+          </Show>
+
           {/* Reports toggle */}
-          <div>
+          <div class="max-w-4xl">
             <button
               onClick={() => setShowReports((v) => !v)}
               class="flex items-center gap-2 text-xs text-stone-600 hover:text-stone-300 transition-colors font-mono"
