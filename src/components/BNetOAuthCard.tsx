@@ -1,7 +1,7 @@
 import { ApiError } from "@/api/client";
 import { bnetApi } from "@/api/bnet";
 import { listenWclAuthCancelled, wclAuthIpc } from "@/ipc";
-import { useBNetStatus, useRevokeBNet } from "@/lib/queries/bnet";
+import { useBNetStatus, useLinkBNetCharacters, useRevokeBNet } from "@/lib/queries/bnet";
 import { UnlistenFn } from "@tauri-apps/api/event";
 import { Component, createSignal, Show } from "solid-js";
 import { Spinner } from "./ui/Spinner";
@@ -37,6 +37,7 @@ async function runBNetOAuthFlow(
 const BNetOAuthCard: Component = () => {
   const statusQuery = useBNetStatus();
   const revokeMutation = useRevokeBNet();
+  const linkMutation = useLinkBNetCharacters();
 
   const [authLoad, setAuthLoad] = createSignal(false);
   const [feedback, setFeedback] = createSignal<{
@@ -89,6 +90,22 @@ const BNetOAuthCard: Component = () => {
     } finally {
       setAuthLoad(false);
     }
+  }
+
+  function handleLinkCharacters() {
+    setFeedback(null);
+    linkMutation.mutate(undefined, {
+      onSuccess: () =>
+        setFeedback({
+          kind: "ok",
+          text: "Personagens sincronizados com sucesso.",
+        }),
+      onError: (err) =>
+        setFeedback({
+          kind: "err",
+          text: err instanceof ApiError ? err.message : "Falha ao sincronizar personagens.",
+        }),
+    });
   }
 
   function handleRevoke() {
@@ -282,6 +299,34 @@ const BNetOAuthCard: Component = () => {
               </svg>
               Conta Battle.net vinculada
             </div>
+            <button
+              onClick={handleLinkCharacters}
+              disabled={linkMutation.isPending}
+              aria-busy={linkMutation.isPending}
+              class="btn-ghost flex items-center gap-1.5 text-xs py-1.5 px-3"
+            >
+              <Show
+                when={linkMutation.isPending}
+                fallback={
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M10 6A4 4 0 1 1 6 2" />
+                    <path d="M6 1v2.5L7.5 2" />
+                  </svg>
+                }
+              >
+                <Spinner size={12} />
+              </Show>
+              {linkMutation.isPending ? "Sincronizando..." : "Sincronizar personagens"}
+            </button>
             <button
               onClick={handleRevoke}
               disabled={revokeMutation.isPending}

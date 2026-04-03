@@ -18,3 +18,9 @@ export function useRevokeBNet() {
     onSuccess: () => qc.invalidateQueries({ queryKey: BNET_STATUS_KEY }),
   }));
 }
+
+export function useLinkBNetCharacters() {
+  return useMutation(() => ({
+    mutationFn: () => bnetApi.linkCharacters(),
+  }));
+}
