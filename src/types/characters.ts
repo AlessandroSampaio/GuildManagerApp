@@ -1,9 +1,14 @@
+export interface RaiderIoSnapshot {
+  score: number;
+}
+
 export interface Character {
   id: number;
   name: string;
   server: string;
   class: string;
   guildName: string | null;
+  raiderIoSnapshot: RaiderIoSnapshot | null;
 }
 
 export interface CharacterSearchResult {

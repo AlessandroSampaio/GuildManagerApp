@@ -3,10 +3,12 @@ import { SkeletonList } from "@/components/ui/Skeleton";
 import { classColor } from "@/helpers/colors";
 import { useMyCharacters } from "@/lib/queries/character";
 import { authStore } from "@/stores/auth";
+import { useNavigate } from "@solidjs/router";
 import { Component, For, Show } from "solid-js";
 
 const DashboardPage: Component = () => {
-  const characters = useMyCharacters();
+  const characters = useMyCharacters(true);
+  const navigate = useNavigate();
 
   return (
     <div class="flex-1 overflow-y-auto p-8">
@@ -54,8 +56,9 @@ const DashboardPage: Component = () => {
                 {(char, i) => (
                   <div
                     class="flex items-center gap-4 px-4 py-3 bg-void-800/40 border border-void-700
-                           hover:bg-void-700/40 transition-colors animate-fade-in"
+                           hover:bg-void-700/40 transition-colors animate-fade-in cursor-pointer"
                     style={`animation-delay:${i() * 30}ms`}
+                    onClick={() => navigate(`/app/characters/${char.id}`)}
                   >
                     {/* Class color bar */}
                     <div
@@ -83,6 +86,18 @@ const DashboardPage: Component = () => {
                     {/* Guild */}
                     <p class="font-mono text-xs text-stone-600 shrink-0 w-40 text-right truncate">
                       {char.guildName ?? <span class="text-void-500">—</span>}
+                    </p>
+
+                    {/* M+ Score */}
+                    <p class="font-mono text-xs shrink-0 w-20 text-right">
+                      <Show
+                        when={char.raiderIoSnapshot?.score != null}
+                        fallback={<span class="text-void-500">—</span>}
+                      >
+                        <span class="text-amber-400">
+                          {(Math.round(char.raiderIoSnapshot!.score * 100) / 100).toFixed(2)}
+                        </span>
+                      </Show>
                     </p>
                   </div>
                 )}

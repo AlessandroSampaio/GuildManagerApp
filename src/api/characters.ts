@@ -3,7 +3,8 @@ import { req } from "./client";
 import { Character, CharacterSearchResult, RaiderIoProfile } from "@/types/characters";
 
 export const charactersApi = {
-  getMyCharacters: () => req<Character[]>("/api/profile/characters"),
+  getMyCharacters: (includeRaiderIo = false) =>
+    req<Character[]>(`/api/profile/characters?includeRaiderIo=${includeRaiderIo}`),
 
 
   search: (q?: string, className?: string, page = 1, pageSize = 20) => {

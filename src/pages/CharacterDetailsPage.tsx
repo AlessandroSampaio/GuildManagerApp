@@ -1,7 +1,7 @@
 import { classColor } from "@/helpers/colors";
 import { useCharacterRaiderIo } from "@/lib/queries/character";
 import { MythicPlusRun, RaiderIoRaidTier } from "@/types/characters";
-import { A, useParams } from "@solidjs/router";
+import { useNavigate, useParams } from "@solidjs/router";
 import { For, Show } from "solid-js";
 
 function fmtMs(ms: number) {
@@ -138,13 +138,14 @@ function MythicPlusRunCard(p: { run: MythicPlusRun }) {
 
 const CharacterDetailsPage = () => {
   const params = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const profile = useCharacterRaiderIo(() => Number(params.id));
 
   return (
     <div class="flex-1 overflow-y-auto p-6 w-full">
       {/* Back link */}
-      <A
-        href="/app/players"
+      <button
+        onClick={() => navigate(-1)}
         class="inline-flex items-center gap-1.5 font-mono text-[10px] text-stone-600
                hover:text-ember-600 transition-colors mb-5"
       >
@@ -160,7 +161,7 @@ const CharacterDetailsPage = () => {
           <path d="M7 2L3 5l4 3" />
         </svg>
         Voltar
-      </A>
+      </button>
 
       <Show when={profile.isLoading}>
         <div class="space-y-4 animate-pulse">

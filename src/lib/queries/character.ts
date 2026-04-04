@@ -1,21 +1,31 @@
-import { useQuery } from "@tanstack/solid-query";
+import { useQuery, useQueryClient } from "@tanstack/solid-query";
+import { createEffect } from "solid-js";
 import { characterKeys } from "../query-keys";
 import { charactersApi } from "@/api/characters";
 
-export function useMyCharacters() {
+export function useMyCharacters(includeRaiderIo = false) {
   return useQuery(() => ({
-    queryKey: characterKeys.mine(),
-    queryFn: () => charactersApi.getMyCharacters(),
+    queryKey: characterKeys.mine(includeRaiderIo),
+    queryFn: () => charactersApi.getMyCharacters(includeRaiderIo),
     staleTime: 60_000,
   }));
 }
 
 export function useCharacterRaiderIo(id: () => number) {
-  return useQuery(() => ({
+  const qc = useQueryClient();
+  const query = useQuery(() => ({
     queryKey: characterKeys.raiderIo(id()),
     queryFn: () => charactersApi.getRaiderIoProfile(id()),
     staleTime: 5 * 60 * 1000,
   }));
+
+  createEffect(() => {
+    if (query.isSuccess) {
+      qc.invalidateQueries({ queryKey: characterKeys.mine() });
+    }
+  });
+
+  return query;
 }
 
 /**
