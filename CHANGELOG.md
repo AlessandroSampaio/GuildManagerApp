@@ -5,6 +5,26 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/)
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-05
+
+### Added
+- Adiciona integração com a `Blizzard`
+- Adiciona integração com `RaiderIo`
+- Adiciona o conceito de `Core`
+- Adiciona página com detalhamento de score do personagem
+- Adiciona a função Mantenha-me Conectado
+- Adiciona visualização simplificada à página `PlayerScoringPage`
+- Adiciona a página de `Perfil`
+
+### Changed
+- A página de `Dashboard` agora exibe os personagens do usuário atual caso a conta esteja vinculada com a blizzard
+- Alteração de senha movida para a página de `Perfil`
+- O menu `Configuração` passa a ser restrito para admins
+
+### Fixed
+- Corrigido problema de validação de usuário
+- Corrigido problema de navegação entre o `Personagem` e a página de `Detalhes de Personagem`
+
 ## [0.3.6] - 2026-04-01
 
 ### Fixed
