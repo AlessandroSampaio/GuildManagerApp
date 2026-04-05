@@ -9,6 +9,12 @@
     {
       "identifier": "opener:allow-open-path",
       "allow": [{ "path": "/**" }]
+    },
+    "stronghold:default",
+    "fs:default",
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [{ "path": "$APPDATA/**" }]
     }
   ]
 }

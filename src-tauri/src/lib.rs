@@ -55,6 +55,30 @@ pub fn run() {
     let app_slot_setup = app_slot.clone();
 
     tauri::Builder::default()
+        .plugin(
+            tauri_plugin_stronghold::Builder::new(|password| {
+                eprintln!("[stronghold] key derivation called, password len={}", password.len());
+
+                let mut key = [0u8; 32];
+                match argon2::Argon2::default()
+                    .hash_password_into(password.as_bytes(), b"guildmgr_sh_salt", &mut key)
+                {
+                    Ok(_) => {
+                        eprintln!(
+                            "[stronghold] key derived ok, first_byte=0x{:02x} last_byte=0x{:02x}",
+                            key[0], key[31]
+                        );
+                        key.to_vec()
+                    }
+                    Err(e) => {
+                        eprintln!("[stronghold] key derivation FAILED: {e}");
+                        panic!("failed to derive vault key: {e}");
+                    }
+                }
+            })
+            .build(),
+        )
+        .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         .setup(move |app| {

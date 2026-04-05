@@ -26,12 +26,26 @@ const CoresPage = lazy(() => import("@/pages/CoresPage"));
 const AuditLogPage = lazy(() => import("@/pages/AuditLogPage"));
 const CharacterDetailsPage = lazy(() => import("@/pages/CharacterDetailsPage"));
 const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
+const RestorePage = lazy(() => import("@/pages/RestorePage"));
 
+/**
+ * Entry point rendered at "/".
+ * - Already authenticated (sessionStorage): go straight to dashboard.
+ * - Remember-me flag set: delegate to /restore for async stronghold restore.
+ * - Otherwise: go to /login.
+ */
 const RootRedirect: Component = () => {
   const nav = useNavigate();
-  nav("/login");
+  if (authStore.isAuthenticated()) {
+    nav("/app/dashboard", { replace: true });
+  } else if (authStore.isRemembered()) {
+    nav("/restore", { replace: true });
+  } else {
+    nav("/login", { replace: true });
+  }
   return null;
 };
+
 
 const LoginShell: Component = () => (
   <div class="flex flex-col h-screen bg-void-900 overflow-hidden">
@@ -40,7 +54,6 @@ const LoginShell: Component = () => (
   </div>
 );
 
-// Validate if the user is authenticated
 const Guard: Component<{ children: any }> = (p) => {
   const nav = useNavigate();
   if (!authStore.isAuthenticated()) {
@@ -50,7 +63,6 @@ const Guard: Component<{ children: any }> = (p) => {
   return p.children;
 };
 
-// Restrict access to admin-only routes
 const AdminGuard: Component<{ children: any }> = (p) => {
   const nav = useNavigate();
   if (authStore.user()?.role?.toLowerCase() !== "admin") {
@@ -64,7 +76,8 @@ const App: Component = () => (
   <QueryClientProvider client={queryClient}>
     <HashRouter>
       <Route path="/" component={RootRedirect} />
-      <Route path={"/login"} component={LoginShell} />
+      <Route path="/restore" component={RestorePage} />
+      <Route path="/login" component={LoginShell} />
       <Route path="/wcl-callback" component={WclCallbackPage} />
       <Route path="/bnet-callback" component={BNetCallbackPage} />
       <Route

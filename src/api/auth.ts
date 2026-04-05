@@ -30,4 +30,10 @@ export const authApi = {
       method: "PATCH",
       body: JSON.stringify(d),
     }),
+  refresh: (refreshToken: string) =>
+    req<AuthResponse>(
+      "/api/auth/refresh",
+      { method: "POST", body: JSON.stringify({ refreshToken }) },
+      true,
+    ),
 };

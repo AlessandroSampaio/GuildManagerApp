@@ -15,22 +15,28 @@ import { ApiError } from "@/api/client";
 const LoginFormPanel: Component = () => {
   const navigate = useNavigate();
   const [serverError, setServerError] = createSignal<string | null>(null);
+  const [rememberMe, setRememberMe] = createSignal(false);
 
   const [form, { Form, Field }] = createForm<LoginForm>({
     validate: zodForm(loginSchema),
   });
 
   const handleSubmit: SubmitHandler<LoginForm> = async (values: LoginForm) => {
+    console.log("[auth] login attempt", { username: values.username, rememberMe: rememberMe() });
     try {
       const data = await authApi.login(values);
-      authStore.setTokens(data.accessToken, data.refreshToken, data.user);
+      console.log("[auth] login success", { user: data.user.username, role: data.user.role });
+      authStore.loginWithRemember(data.accessToken, data.refreshToken, data.user, rememberMe());
+      if (rememberMe()) {
+        console.log("[auth] refresh token queued for stronghold persist");
+      }
       navigate("/app/dashboard");
     } catch (err) {
-      setServerError(
-        err instanceof ApiError
-          ? err.message
-          : "Não foi possível conectar ao servidor.",
-      );
+      const message = err instanceof ApiError
+        ? err.message
+        : "Não foi possível conectar ao servidor.";
+      console.error("[auth] login failed", { error: message });
+      setServerError(message);
     }
   };
 
@@ -57,6 +63,17 @@ const LoginFormPanel: Component = () => {
           />
         )}
       </Field>
+
+      {/* Remember me */}
+      <label class="flex items-center gap-2.5 cursor-pointer select-none w-fit">
+        <input
+          type="checkbox"
+          checked={rememberMe()}
+          onChange={(e) => setRememberMe(e.currentTarget.checked)}
+          class="w-3.5 h-3.5 accent-amber-500 cursor-pointer"
+        />
+        <span class="font-mono text-xs text-stone-500">Lembrar-me</span>
+      </label>
 
       <FormError message={serverError()} />
 
