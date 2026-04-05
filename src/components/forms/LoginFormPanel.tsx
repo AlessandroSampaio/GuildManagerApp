@@ -22,19 +22,31 @@ const LoginFormPanel: Component = () => {
   });
 
   const handleSubmit: SubmitHandler<LoginForm> = async (values: LoginForm) => {
-    console.log("[auth] login attempt", { username: values.username, rememberMe: rememberMe() });
+    console.log("[auth] login attempt", {
+      username: values.username,
+      rememberMe: rememberMe(),
+    });
     try {
       const data = await authApi.login(values);
-      console.log("[auth] login success", { user: data.user.username, role: data.user.role });
-      authStore.loginWithRemember(data.accessToken, data.refreshToken, data.user, rememberMe());
+      console.log("[auth] login success", {
+        user: data.user.username,
+        role: data.user.role,
+      });
+      authStore.loginWithRemember(
+        data.accessToken,
+        data.refreshToken,
+        data.user,
+        rememberMe(),
+      );
       if (rememberMe()) {
         console.log("[auth] refresh token queued for stronghold persist");
       }
       navigate("/app/dashboard");
     } catch (err) {
-      const message = err instanceof ApiError
-        ? err.message
-        : "Não foi possível conectar ao servidor.";
+      const message =
+        err instanceof ApiError
+          ? err.message
+          : "Não foi possível conectar ao servidor.";
       console.error("[auth] login failed", { error: message });
       setServerError(message);
     }
@@ -72,7 +84,9 @@ const LoginFormPanel: Component = () => {
           onChange={(e) => setRememberMe(e.currentTarget.checked)}
           class="w-3.5 h-3.5 accent-amber-500 cursor-pointer"
         />
-        <span class="font-mono text-xs text-stone-500">Lembrar-me</span>
+        <span class="font-mono text-xs text-stone-500">
+          Mantenha-me Conectado
+        </span>
       </label>
 
       <FormError message={serverError()} />
