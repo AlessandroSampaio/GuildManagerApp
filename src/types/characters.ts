@@ -1,5 +1,6 @@
 export interface RaiderIoSnapshot {
   score: number;
+  thumbnailUrl?: string;
 }
 
 export interface Character {
