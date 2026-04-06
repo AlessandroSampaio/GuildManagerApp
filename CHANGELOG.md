@@ -5,6 +5,17 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/)
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-04-06
+
+### Added
+- Adiciona cores por desempenho na visualização simplificada de pontos
+- Adiciona possibilidade de ordenação na visualização simplificada de pontos
+
+### Fixed
+- Corrige falha no cache de dados do `RaiderIo`
+- Corrige falha na importação de personagens via `Blizzard API`
+- Corrige falha na sincronização de membros da guilda
+
 ## [0.4.0] - 2026-04-05
 
 ### Added
