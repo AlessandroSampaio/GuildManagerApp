@@ -1,15 +1,9 @@
+import { fmtMs } from "@/helpers";
 import { classColor } from "@/helpers/colors";
 import { useCharacterRaiderIo } from "@/lib/queries/character";
 import { MythicPlusRun, RaiderIoRaidTier } from "@/types/characters";
 import { useNavigate, useParams } from "@solidjs/router";
 import { For, Show } from "solid-js";
-
-function fmtMs(ms: number) {
-  const total = Math.floor(ms / 1000);
-  const m = Math.floor(total / 60);
-  const s = total % 60;
-  return `${m}:${String(s).padStart(2, "0")}`;
-}
 
 function RaidProgressionBar(p: { tier: RaiderIoRaidTier }) {
   const total = p.tier.total_bosses;
@@ -87,11 +81,15 @@ function MythicPlusRunCard(p: { run: MythicPlusRun }) {
         </div>
         {/* Key level badge */}
         <div class="relative z-10 text-right shrink-0">
-          <p class={`font-display text-lg leading-none ${upgradeColor(r.num_keystone_upgrades)}`}>
+          <p
+            class={`font-display text-lg leading-none ${upgradeColor(r.num_keystone_upgrades)}`}
+          >
             +{r.mythic_level}
           </p>
           <p class="font-mono text-[9px] text-stone-600 mt-0.5">
-            {r.num_keystone_upgrades > 0 ? `+${r.num_keystone_upgrades} chest` : "depleted"}
+            {r.num_keystone_upgrades > 0
+              ? `+${r.num_keystone_upgrades} chest`
+              : "depleted"}
           </p>
         </div>
       </div>
@@ -99,17 +97,25 @@ function MythicPlusRunCard(p: { run: MythicPlusRun }) {
       {/* Stats row */}
       <div class="border-t border-void-700 grid grid-cols-3 divide-x divide-void-700">
         <div class="px-3 py-1.5 text-center">
-          <p class="font-mono text-[9px] text-stone-600 uppercase mb-0.5">Score</p>
+          <p class="font-mono text-[9px] text-stone-600 uppercase mb-0.5">
+            Score
+          </p>
           <p class="font-mono text-xs text-amber-400">{r.score.toFixed(1)}</p>
         </div>
         <div class="px-3 py-1.5 text-center">
-          <p class="font-mono text-[9px] text-stone-600 uppercase mb-0.5">Tempo</p>
-          <p class={`font-mono text-xs ${overtime ? "text-red-400" : "text-emerald-400"}`}>
+          <p class="font-mono text-[9px] text-stone-600 uppercase mb-0.5">
+            Tempo
+          </p>
+          <p
+            class={`font-mono text-xs ${overtime ? "text-red-400" : "text-emerald-400"}`}
+          >
             {fmtMs(r.clear_time_ms)}
           </p>
         </div>
         <div class="px-3 py-1.5 text-center">
-          <p class="font-mono text-[9px] text-stone-600 uppercase mb-0.5">Par</p>
+          <p class="font-mono text-[9px] text-stone-600 uppercase mb-0.5">
+            Par
+          </p>
           <p class="font-mono text-xs text-stone-500">{fmtMs(r.par_time_ms)}</p>
         </div>
       </div>
@@ -118,16 +124,15 @@ function MythicPlusRunCard(p: { run: MythicPlusRun }) {
       <div class="border-t border-void-700 px-3 py-2 flex items-center gap-2 flex-wrap">
         <For each={r.affixes}>
           {(affix) => (
-            <div
-              class="flex items-center gap-1.5"
-              title={affix.description}
-            >
+            <div class="flex items-center gap-1.5" title={affix.description}>
               <img
                 src={affix.icon_url}
                 alt={affix.name}
                 class="w-4 h-4 border border-void-600"
               />
-              <span class="font-mono text-[9px] text-stone-500">{affix.name}</span>
+              <span class="font-mono text-[9px] text-stone-500">
+                {affix.name}
+              </span>
             </div>
           )}
         </For>
@@ -202,8 +207,8 @@ const CharacterDetailsPage = () => {
                   {data().name}
                 </h1>
                 <p class="font-mono text-[11px] text-stone-500 mt-0.5">
-                  {data().active_spec_name} {data().class} ·{" "}
-                  {data().race} · {data().realm}–{data().region.toUpperCase()}
+                  {data().active_spec_name} {data().class} · {data().race} ·{" "}
+                  {data().realm}–{data().region.toUpperCase()}
                 </p>
                 <div class="flex items-center gap-2 mt-2 flex-wrap">
                   <span class="font-mono text-[9px] px-1.5 py-0.5 bg-void-700 border border-void-600 text-stone-400 uppercase">
