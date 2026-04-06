@@ -23,70 +23,47 @@ export interface CharacterSearchResult {
 }
 
 export interface MythicPlusAffix {
-  id: number;
+  affixId: number;
   name: string;
-  description: string;
-  icon: string;
-  icon_url: string;
-  wowhead_url: string;
-}
-
-export interface MythicPlusSpec {
-  id: number;
-  name: string;
-  slug: string;
-  class_id: number;
-  role: string;
-  is_melee: boolean;
-  patch: string;
-  ordinal: number;
+  iconUrl: string;
 }
 
 export interface MythicPlusRun {
+  keystoneRunId: number;
   dungeon: string;
-  short_name: string;
-  mythic_level: number;
-  completed_at: string;
-  clear_time_ms: number;
-  keystone_run_id: number;
-  par_time_ms: number;
-  num_keystone_upgrades: number;
-  map_challenge_mode_id: number;
-  zone_id: number;
-  zone_expansion_id: number;
-  icon_url: string;
-  background_image_url: string;
+  shortName: string;
+  mythicLevel: number;
+  completedAt: string;
   score: number;
+  iconUrl: string;
+  backgroundImageUrl: string;
   affixes: MythicPlusAffix[];
-  url: string;
-  spec: MythicPlusSpec;
-  role: string;
 }
 
 export interface RaiderIoRaidTier {
+  raidSlug: string;
   summary: string;
-  expansion_id: number;
-  total_bosses: number;
-  normal_bosses_killed: number;
-  heroic_bosses_killed: number;
-  mythic_bosses_killed: number;
+  expansionId: number;
+  totalBosses: number;
+  normalBossesKilled: number;
+  heroicBossesKilled: number;
+  mythicBossesKilled: number;
 }
 
 export interface RaiderIoProfile {
+  isFresh: boolean;
+  characterId: number;
   name: string;
-  race: string;
-  class: string;
-  active_spec_name: string;
-  active_spec_role: string;
-  gender: string;
-  faction: string;
-  achievement_points: number;
-  thumbnail_url: string;
+  server: string;
   region: string;
-  realm: string;
-  last_crawled_at: string;
-  profile_url: string;
-  profile_banner: string;
-  raid_progression: Record<string, RaiderIoRaidTier>;
-  mythic_plus_best_runs: MythicPlusRun[];
+  className: string | null;
+  guildName: string;
+  playerId: number;
+  playerName: string;
+  thumbnailUrl: string;
+  lastCrawledAt: string;
+  cachedAt: string;
+  score: number;
+  mythicRuns: MythicPlusRun[];
+  raidProgressions: RaiderIoRaidTier[];
 }

@@ -1,12 +1,11 @@
-import { fmtMs } from "@/helpers";
-import { classColor } from "@/helpers/colors";
+import { classColor, raiderIoScoreColor } from "@/helpers/colors";
 import { useCharacterRaiderIo } from "@/lib/queries/character";
 import { MythicPlusRun, RaiderIoRaidTier } from "@/types/characters";
 import { useNavigate, useParams } from "@solidjs/router";
 import { For, Show } from "solid-js";
 
 function RaidProgressionBar(p: { tier: RaiderIoRaidTier }) {
-  const total = p.tier.total_bosses;
+  const total = p.tier.totalBosses;
   return (
     <div class="space-y-1.5">
       <div class="flex items-center justify-between">
@@ -20,7 +19,7 @@ function RaidProgressionBar(p: { tier: RaiderIoRaidTier }) {
             Normal
           </p>
           <p class="font-mono text-xs text-stone-300">
-            {p.tier.normal_bosses_killed}
+            {p.tier.normalBossesKilled}
             <span class="text-stone-600">/{total}</span>
           </p>
         </div>
@@ -29,7 +28,7 @@ function RaidProgressionBar(p: { tier: RaiderIoRaidTier }) {
             Heroic
           </p>
           <p class="font-mono text-xs text-amber-400">
-            {p.tier.heroic_bosses_killed}
+            {p.tier.heroicBossesKilled}
             <span class="text-stone-600">/{total}</span>
           </p>
         </div>
@@ -38,7 +37,7 @@ function RaidProgressionBar(p: { tier: RaiderIoRaidTier }) {
             Mythic
           </p>
           <p class="font-mono text-xs text-violet-400">
-            {p.tier.mythic_bosses_killed}
+            {p.tier.mythicBossesKilled}
             <span class="text-stone-600">/{total}</span>
           </p>
         </div>
@@ -47,27 +46,19 @@ function RaidProgressionBar(p: { tier: RaiderIoRaidTier }) {
   );
 }
 
-function upgradeColor(upgrades: number) {
-  if (upgrades >= 3) return "text-amber-300";
-  if (upgrades >= 2) return "text-emerald-400";
-  if (upgrades >= 1) return "text-sky-400";
-  return "text-stone-500";
-}
-
 function MythicPlusRunCard(p: { run: MythicPlusRun }) {
   const r = p.run;
-  const overtime = r.clear_time_ms > r.par_time_ms;
   return (
     <div class="bg-void-800 border border-void-700 overflow-hidden">
       {/* Dungeon header with background image */}
       <div class="relative flex items-center gap-3 px-3 py-2.5">
         <div
           class="absolute inset-0 bg-cover bg-center opacity-10"
-          style={{ "background-image": `url(${r.background_image_url})` }}
+          style={{ "background-image": `url(${r.backgroundImageUrl})` }}
           aria-hidden="true"
         />
         <img
-          src={r.icon_url}
+          src={r.iconUrl}
           alt={r.dungeon}
           class="w-8 h-8 shrink-0 border border-void-600 relative z-10"
         />
@@ -75,68 +66,41 @@ function MythicPlusRunCard(p: { run: MythicPlusRun }) {
           <p class="font-semibold text-sm text-stone-100 truncate">
             {r.dungeon}
           </p>
-          <p class="font-mono text-[10px] text-stone-500">
-            {r.short_name} · {r.spec.name} · {r.role}
-          </p>
+          <p class="font-mono text-[10px] text-stone-500">{r.shortName}</p>
         </div>
         {/* Key level badge */}
         <div class="relative z-10 text-right shrink-0">
-          <p
-            class={`font-display text-lg leading-none ${upgradeColor(r.num_keystone_upgrades)}`}
-          >
-            +{r.mythic_level}
-          </p>
-          <p class="font-mono text-[9px] text-stone-600 mt-0.5">
-            {r.num_keystone_upgrades > 0
-              ? `+${r.num_keystone_upgrades} chest`
-              : "depleted"}
-          </p>
-        </div>
-      </div>
-
-      {/* Stats row */}
-      <div class="border-t border-void-700 grid grid-cols-3 divide-x divide-void-700">
-        <div class="px-3 py-1.5 text-center">
-          <p class="font-mono text-[9px] text-stone-600 uppercase mb-0.5">
-            Score
-          </p>
-          <p class="font-mono text-xs text-amber-400">{r.score.toFixed(1)}</p>
-        </div>
-        <div class="px-3 py-1.5 text-center">
-          <p class="font-mono text-[9px] text-stone-600 uppercase mb-0.5">
-            Tempo
+          <p class="font-display text-lg leading-none text-amber-300">
+            +{r.mythicLevel}
           </p>
           <p
-            class={`font-mono text-xs ${overtime ? "text-red-400" : "text-emerald-400"}`}
+            class="font-mono text-[9px] mt-0.5"
+            style={`color: ${raiderIoScoreColor(r.score * 8)}`}
           >
-            {fmtMs(r.clear_time_ms)}
+            {r.score.toFixed(1)} pts
           </p>
-        </div>
-        <div class="px-3 py-1.5 text-center">
-          <p class="font-mono text-[9px] text-stone-600 uppercase mb-0.5">
-            Par
-          </p>
-          <p class="font-mono text-xs text-stone-500">{fmtMs(r.par_time_ms)}</p>
         </div>
       </div>
 
       {/* Affixes */}
-      <div class="border-t border-void-700 px-3 py-2 flex items-center gap-2 flex-wrap">
-        <For each={r.affixes}>
-          {(affix) => (
-            <div class="flex items-center gap-1.5" title={affix.description}>
-              <img
-                src={affix.icon_url}
-                alt={affix.name}
-                class="w-4 h-4 border border-void-600"
-              />
-              <span class="font-mono text-[9px] text-stone-500">
-                {affix.name}
-              </span>
-            </div>
-          )}
-        </For>
-      </div>
+      <Show when={r.affixes.length > 0}>
+        <div class="border-t border-void-700 px-3 py-2 flex items-center gap-2 flex-wrap">
+          <For each={r.affixes}>
+            {(affix) => (
+              <div class="flex items-center gap-1.5">
+                <img
+                  src={affix.iconUrl}
+                  alt={affix.name}
+                  class="w-4 h-4 border border-void-600"
+                />
+                <span class="font-mono text-[9px] text-stone-500">
+                  {affix.name}
+                </span>
+              </div>
+            )}
+          </For>
+        </div>
+      </Show>
     </div>
   );
 }
@@ -190,48 +154,65 @@ const CharacterDetailsPage = () => {
         </div>
       </Show>
 
+      <Show when={profile.isSuccess && profile.data && !profile.data.isFresh}>
+        <div class="flex items-center justify-between gap-3 bg-amber-950/40 border border-amber-700/60 px-4 py-2.5 mb-5">
+          <p class="font-mono text-[10px] text-amber-400 uppercase tracking-wide">
+            Dados desatualizados — este perfil não foi sincronizado recentemente
+          </p>
+          <button
+            onClick={() => profile.refetch()}
+            class="shrink-0 font-mono text-[10px] text-amber-300 border border-amber-700/60
+                   bg-amber-900/30 hover:bg-amber-800/40 transition-colors px-2.5 py-1 uppercase tracking-wide"
+          >
+            Atualizar
+          </button>
+        </div>
+      </Show>
+
       <Show when={profile.isSuccess && profile.data}>
         {(data) => (
           <div class="space-y-5 animate-fade-in">
             {/* Header card */}
             <div class="bg-void-800 border border-void-700 p-4 flex items-start gap-4">
               <img
-                src={data().thumbnail_url}
+                src={data().thumbnailUrl}
                 alt={data().name}
                 class="w-14 h-14 object-cover shrink-0 border border-void-600"
               />
               <div class="flex-1 min-w-0">
                 <h1
-                  class={`font-display text-xl leading-tight truncate ${classColor(data().class)}`}
+                  class={`font-display text-xl leading-tight truncate ${classColor(data().className ?? "")}`}
                 >
                   {data().name}
                 </h1>
                 <p class="font-mono text-[11px] text-stone-500 mt-0.5">
-                  {data().active_spec_name} {data().class} · {data().race} ·{" "}
-                  {data().realm}–{data().region.toUpperCase()}
+                  {data().className ?? "Unknown"} · {data().server}–
+                  {data().region.toUpperCase()}
                 </p>
                 <div class="flex items-center gap-2 mt-2 flex-wrap">
-                  <span class="font-mono text-[9px] px-1.5 py-0.5 bg-void-700 border border-void-600 text-stone-400 uppercase">
-                    {data().active_spec_role}
-                  </span>
-                  <span class="font-mono text-[9px] px-1.5 py-0.5 bg-void-700 border border-void-600 text-stone-400 capitalize">
-                    {data().faction}
-                  </span>
-                  <span class="font-mono text-[9px] text-stone-600">
-                    {data().achievement_points.toLocaleString()} pts
+                  <Show when={data().guildName}>
+                    <span class="font-mono text-[9px] px-1.5 py-0.5 bg-void-700 border border-void-600 text-stone-400">
+                      &lt;{data().guildName}&gt;
+                    </span>
+                  </Show>
+                  <span
+                    class="font-mono text-[9px]"
+                    style={`color: ${raiderIoScoreColor(data().score)}`}
+                  >
+                    {data().score.toFixed(1)} score
                   </span>
                 </div>
               </div>
             </div>
 
             {/* Mythic+ best runs */}
-            <Show when={(data().mythic_plus_best_runs?.length ?? 0) > 0}>
+            <Show when={(data().mythicRuns?.length ?? 0) > 0}>
               <div>
                 <h2 class="font-mono text-[10px] text-stone-500 uppercase tracking-widest mb-3">
                   Mythic+ Melhores Runs
                 </h2>
-                <div class="grid gap-3 grid-cols-[repeat(auto-fill,minmax(400px,1fr))]">
-                  <For each={data().mythic_plus_best_runs}>
+                <div class="grid gap-3 grid-cols-[repeat(auto-fill,minmax(340px,1fr))]">
+                  <For each={data().mythicRuns}>
                     {(run) => <MythicPlusRunCard run={run} />}
                   </For>
                 </div>
@@ -239,37 +220,30 @@ const CharacterDetailsPage = () => {
             </Show>
 
             {/* Raid progression */}
-            <div class="bg-void-800 border border-void-700 p-4">
-              <h2 class="font-mono text-[10px] text-stone-500 uppercase tracking-widest mb-3">
-                Progressão de Raid
-              </h2>
-              <Show
-                when={Object.keys(data().raid_progression).length > 0}
-                fallback={
-                  <p class="font-mono text-xs text-stone-600">
-                    Sem dados de progressão
-                  </p>
-                }
-              >
+            <Show when={(data().raidProgressions?.length ?? 0) > 0}>
+              <div class="bg-void-800 border border-void-700 p-4">
+                <h2 class="font-mono text-[10px] text-stone-500 uppercase tracking-widest mb-3">
+                  Progressão de Raid
+                </h2>
                 <div class="space-y-4">
-                  <For each={Object.entries(data().raid_progression)}>
-                    {([key, tier]) => (
+                  <For each={data().raidProgressions}>
+                    {(tier) => (
                       <div>
                         <p class="font-mono text-[9px] text-stone-600 uppercase mb-2">
-                          {key}
+                          {tier.raidSlug}
                         </p>
                         <RaidProgressionBar tier={tier} />
                       </div>
                     )}
                   </For>
                 </div>
-              </Show>
-            </div>
+              </div>
+            </Show>
 
             {/* Footer */}
             <p class="font-mono text-[9px] text-stone-700 text-right">
               Atualizado em{" "}
-              {new Date(data().last_crawled_at).toLocaleString("pt-BR")}
+              {new Date(data().lastCrawledAt).toLocaleString("pt-BR")}
             </p>
           </div>
         )}
