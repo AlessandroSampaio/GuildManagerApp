@@ -5,6 +5,11 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/)
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-04-08
+
+### Added
+- Adiciona informações de penalidades na visualização detalhada de pontos
+
 ## [0.4.1] - 2026-04-06
 
 ### Added
