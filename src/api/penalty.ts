@@ -22,6 +22,11 @@ export const penaltyApi = {
   listWeekPenalties: (weekId: number) =>
     req<PlayerWeekPenalty[]>(`/api/raid-weeks/${weekId}/penalties`),
 
+  listPlayerWeekPenalties: (weekId: number, playerId: number) =>
+    req<PlayerWeekPenalty[]>(
+      `/api/raid-weeks/${weekId}/players/${playerId}/penalties`,
+    ),
+
   addPenalty: (
     weekId: number,
     playerId: number,

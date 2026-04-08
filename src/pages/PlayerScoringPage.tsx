@@ -335,7 +335,10 @@ const PlayerScoringPage: Component = () => {
 
             {/* Detailed view */}
             <Show when={viewMode() === "detailed"}>
-              <PlayerScoringDetailedView players={result()!.players} />
+              <PlayerScoringDetailedView
+                players={result()!.players}
+                raidWeekId={weekId()}
+              />
             </Show>
 
             {/* Simplified grid view */}

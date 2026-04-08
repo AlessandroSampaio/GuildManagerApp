@@ -18,6 +18,19 @@ export function useWeekPenalties(weekId: () => number) {
   }));
 }
 
+export function usePlayerWeekPenalties(
+  weekId: () => number,
+  playerId: () => number,
+  enabled: () => boolean,
+) {
+  return useQuery(() => ({
+    queryKey: penaltyKeys.playerPenalties(weekId(), playerId()),
+    queryFn: () => penaltyApi.listPlayerWeekPenalties(weekId(), playerId()),
+    staleTime: 30 * 1000,
+    enabled: enabled(),
+  }));
+}
+
 export function useCreatePenaltyEvent() {
   const qc = useQueryClient();
   return useMutation(() => ({

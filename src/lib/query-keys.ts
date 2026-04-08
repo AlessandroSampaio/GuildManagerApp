@@ -84,6 +84,8 @@ export const characterKeys = {
 export const penaltyKeys = {
   events: () => ["penalty-events"] as const,
   weekPenalties: (weekId: number) => ["raid-weeks", "penalties", weekId] as const,
+  playerPenalties: (weekId: number, playerId: number) =>
+    ["raid-weeks", "penalties", weekId, "player", playerId] as const,
 } as const;
 
 export const auditLogKeys = {

@@ -1,13 +1,38 @@
+import { penaltyApi } from "@/api/penalty";
+import { penaltyKeys } from "@/lib/query-keys";
 import { PlayerScore } from "@/types/player-scoring";
+import { useQueryClient } from "@tanstack/solid-query";
 import { Component, createSignal, For, Show } from "solid-js";
-import { RankBar } from "./ui/RankBar";
 import { CharacterSection } from "./CharacterSection";
+import { PlayerPenaltiesSection } from "./PlayerPenaltiesSection";
+import { RankBar } from "./ui/RankBar";
 
-export const PlayerCard: Component<{ player: PlayerScore; rank: number }> = (
-  p,
-) => {
+export const PlayerCard: Component<{
+  player: PlayerScore;
+  rank: number;
+  raidWeekId: number;
+}> = (p) => {
   const [expanded, setExpanded] = createSignal(false);
+  const [fetchPenalties, setFetchPenalties] = createSignal(false);
+  const qc = useQueryClient();
   const pl = p.player;
+
+  let hoverTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const onMouseEnter = () => {
+    hoverTimer = setTimeout(() => {
+      qc.prefetchQuery({
+        queryKey: penaltyKeys.playerPenalties(p.raidWeekId, pl.playerId),
+        queryFn: () =>
+          penaltyApi.listPlayerWeekPenalties(p.raidWeekId, pl.playerId),
+        staleTime: 30 * 1000,
+      });
+    }, 300);
+  };
+
+  const onMouseLeave = () => {
+    clearTimeout(hoverTimer);
+  };
 
   const rankBadgeClass = () => {
     if (p.rank === 1) return "text-amber-300 border-amber-700 bg-amber-950/50";
@@ -24,7 +49,12 @@ export const PlayerCard: Component<{ player: PlayerScore; rank: number }> = (
     >
       {/* Player header */}
       <button
-        onClick={() => setExpanded((v) => !v)}
+        onClick={() => {
+          setFetchPenalties(true);
+          setExpanded((v) => !v);
+        }}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
         class="w-full flex items-center gap-4 px-5 py-4 hover:bg-void-800/30 transition-colors text-left"
       >
         {/* Rank badge */}
@@ -84,12 +114,17 @@ export const PlayerCard: Component<{ player: PlayerScore; rank: number }> = (
         </svg>
       </button>
 
-      {/* Characters */}
+      {/* Characters + Penalties */}
       <Show when={expanded()}>
         <div class="border-t border-void-700 animate-fade-in">
           <For each={pl.characters}>
             {(char) => <CharacterSection char={char} />}
           </For>
+          <PlayerPenaltiesSection
+            raidWeekId={p.raidWeekId}
+            playerId={pl.playerId}
+            fetchEnabled={fetchPenalties}
+          />
         </div>
       </Show>
     </div>
