@@ -17,23 +17,26 @@ const LoginPage: Component = () => {
   const [tab, setTab] = createSignal<Tab>("login");
 
   return (
-    <div class="flex-1 flex items-center justify-center relative overflow-hidden bg-void-900">
-      {/* Background grid */}
+    <div class="flex-1 overflow-y-auto relative bg-void-900">
+      {/* Background grid — fixed so it stays visible while scrolling */}
       <div
-        class="absolute inset-0 opacity-20"
+        class="fixed inset-0 opacity-20 pointer-events-none"
         aria-hidden="true"
         style="background-image:linear-gradient(rgba(200,116,28,0.15) 1px,transparent 1px),linear-gradient(90deg,rgba(200,116,28,0.15) 1px,transparent 1px);background-size:40px 40px"
       />
       <div
-        class="absolute inset-0 pointer-events-none"
+        class="fixed inset-0 pointer-events-none"
         aria-hidden="true"
         style="background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(200,116,28,0.12) 0%,transparent 70%)"
       />
       <div
-        class="absolute inset-x-0 h-[2px] animate-scan pointer-events-none"
+        class="fixed inset-x-0 h-[2px] animate-scan pointer-events-none"
         aria-hidden="true"
         style="background:linear-gradient(90deg,transparent,rgba(200,116,28,0.3),transparent)"
       />
+
+      {/* Centering wrapper — min-h-full keeps the panel centered when there's room */}
+      <div class="relative min-h-full flex items-center justify-center py-8">
 
       {/* Panel */}
       <div class="relative w-full max-w-[360px] mx-6 animate-slide-up">
@@ -137,6 +140,8 @@ const LoginPage: Component = () => {
         <p class="text-center font-mono text-[10px] text-stone-700 mt-4 tracking-widest">
           GUILD MANAGER DESKTOP CLIENT · v{appVersion()}
         </p>
+      </div>
+
       </div>
     </div>
   );
