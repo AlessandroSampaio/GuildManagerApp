@@ -1,4 +1,5 @@
 import type { AuthResponse, LoginRequest, RegisterRequest } from "@/types/auth";
+import type { ResetPasswordForm } from "@/schemas/resetPasswordSchema";
 import { req } from "./client";
 
 export const authApi = {
@@ -34,6 +35,15 @@ export const authApi = {
     req<AuthResponse>(
       "/api/auth/refresh",
       { method: "POST", body: JSON.stringify({ refreshToken }) },
+      true,
+    ),
+  resetPassword: (d: ResetPasswordForm) =>
+    req<void>(
+      "/api/auth/reset-password",
+      {
+        method: "POST",
+        body: JSON.stringify(d),
+      },
       true,
     ),
 };

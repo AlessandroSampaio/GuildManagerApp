@@ -12,7 +12,11 @@ import { authApi } from "@/api/auth";
 import { authStore } from "@/stores/auth";
 import { ApiError } from "@/api/client";
 
-const LoginFormPanel: Component = () => {
+interface Props {
+  onForgotPassword: () => void;
+}
+
+const LoginFormPanel: Component<Props> = (props) => {
   const navigate = useNavigate();
   const [serverError, setServerError] = createSignal<string | null>(null);
   const [rememberMe, setRememberMe] = createSignal(false);
@@ -88,6 +92,16 @@ const LoginFormPanel: Component = () => {
           Mantenha-me Conectado
         </span>
       </label>
+
+      <div class="flex justify-end">
+        <button
+          type="button"
+          onClick={props.onForgotPassword}
+          class="font-mono text-[11px] text-stone-600 hover:text-ember-500 transition-colors duration-150"
+        >
+          Esqueci minha senha
+        </button>
+      </div>
 
       <FormError message={serverError()} />
 

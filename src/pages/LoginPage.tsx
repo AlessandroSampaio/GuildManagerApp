@@ -1,9 +1,10 @@
 import LoginFormPanel from "@/components/forms/LoginFormPanel";
 import RegisterFormPanel from "@/components/forms/RegisterFormPanel";
+import ResetPasswordFormPanel from "@/components/forms/ResetPasswordFormPanel";
 import { appVersion } from "@/lib/version";
 import { Component, createSignal, Show } from "solid-js";
 
-type Tab = "login" | "register";
+type Tab = "login" | "register" | "reset";
 
 const RuneCorner: Component<{ class?: string }> = (p) => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class={p.class}>
@@ -78,37 +79,57 @@ const LoginPage: Component = () => {
             </p>
           </div>
 
-          {/* Tabs */}
-          <div class="flex border-b border-void-700" role="tablist">
-            <button
-              role="tab"
-              aria-selected={tab() === "login"}
-              onClick={() => setTab("login")}
-              class={`flex-1 py-2.5 font-mono text-[11px] tracking-widest uppercase transition-colors duration-150 ${
-                tab() === "login"
-                  ? "text-ember-500 border-b-2 border-ember-600 -mb-px bg-void-800/60"
-                  : "text-stone-600 hover:text-stone-400 border-b-2 border-transparent -mb-px"
-              }`}
-            >
-              Entrar
-            </button>
-            <button
-              role="tab"
-              aria-selected={tab() === "register"}
-              onClick={() => setTab("register")}
-              class={`flex-1 py-2.5 font-mono text-[11px] tracking-widest uppercase transition-colors duration-150 ${
-                tab() === "register"
-                  ? "text-ember-500 border-b-2 border-ember-600 -mb-px bg-void-800/60"
-                  : "text-stone-600 hover:text-stone-400 border-b-2 border-transparent -mb-px"
-              }`}
-            >
-              Registrar
-            </button>
-          </div>
+          {/* Tabs — hidden on reset view */}
+          <Show when={tab() !== "reset"}>
+            <div class="flex border-b border-void-700" role="tablist">
+              <button
+                role="tab"
+                aria-selected={tab() === "login"}
+                onClick={() => setTab("login")}
+                class={`flex-1 py-2.5 font-mono text-[11px] tracking-widest uppercase transition-colors duration-150 ${
+                  tab() === "login"
+                    ? "text-ember-500 border-b-2 border-ember-600 -mb-px bg-void-800/60"
+                    : "text-stone-600 hover:text-stone-400 border-b-2 border-transparent -mb-px"
+                }`}
+              >
+                Entrar
+              </button>
+              <button
+                role="tab"
+                aria-selected={tab() === "register"}
+                onClick={() => setTab("register")}
+                class={`flex-1 py-2.5 font-mono text-[11px] tracking-widest uppercase transition-colors duration-150 ${
+                  tab() === "register"
+                    ? "text-ember-500 border-b-2 border-ember-600 -mb-px bg-void-800/60"
+                    : "text-stone-600 hover:text-stone-400 border-b-2 border-transparent -mb-px"
+                }`}
+              >
+                Registrar
+              </button>
+            </div>
+          </Show>
+
+          {/* Reset header */}
+          <Show when={tab() === "reset"}>
+            <div class="border-b border-void-700 px-6 py-2.5">
+              <p class="font-mono text-[11px] tracking-widest uppercase text-ember-500">
+                Redefinir Senha
+              </p>
+            </div>
+          </Show>
 
           <div role="tabpanel">
-            <Show when={tab() === "login"} fallback={<RegisterFormPanel />}>
-              <LoginFormPanel />
+            <Show when={tab() === "login"}>
+              <LoginFormPanel onForgotPassword={() => setTab("reset")} />
+            </Show>
+            <Show when={tab() === "register"}>
+              <RegisterFormPanel />
+            </Show>
+            <Show when={tab() === "reset"}>
+              <ResetPasswordFormPanel
+                onBack={() => setTab("login")}
+                onSuccess={() => setTab("login")}
+              />
             </Show>
           </div>
         </div>
