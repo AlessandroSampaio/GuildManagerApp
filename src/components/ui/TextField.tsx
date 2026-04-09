@@ -15,7 +15,7 @@
  *   </MyField>
  */
 
-import { Component, JSX, Show, splitProps } from "solid-js";
+import { Component, createSignal, JSX, Show, splitProps } from "solid-js";
 import type {
   FieldStore,
   FieldElementProps,
@@ -241,6 +241,8 @@ export function PasswordField<T extends FieldValues, N extends FieldPath<T>>(
     "autocomplete",
   ]);
 
+  const [showPwd, setShowPwd] = createSignal(false);
+
   const error = () => hasError(local.field);
   const valid = () => isValid(local.field);
   const val = () => strValue(local.field);
@@ -257,22 +259,64 @@ export function PasswordField<T extends FieldValues, N extends FieldPath<T>>(
         <input
           {...local.fieldProps} // ← name, ref, onInput, onChange, onBlur
           id={String(local.fieldProps.name)}
-          type="password"
+          type={showPwd() ? "text" : "password"}
           placeholder={local.placeholder ?? "••••••••••"}
           value={val()}
           autocomplete={local.autocomplete}
-          class={inputClass(error(), valid(), "pr-8")}
+          class={inputClass(error(), valid(), "pr-14")}
           aria-invalid={error()}
           aria-describedby={
             error() ? `${String(local.fieldProps.name)}-error` : undefined
           }
         />
+        {/* Valid / error icons shifted left to leave room for the toggle */}
         <Show when={valid()}>
-          <ValidIcon />
+          <span
+            class="absolute right-8 top-1/2 -translate-y-1/2 text-emerald-500 pointer-events-none"
+            aria-hidden="true"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6">
+              <path d="M2 6.5l3 3 5-5.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
         </Show>
         <Show when={error() && !valid()}>
-          <ErrorIcon />
+          <span
+            class="absolute right-8 top-1/2 -translate-y-1/2 text-red-500 pointer-events-none"
+            aria-hidden="true"
+          >
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.5">
+              <line x1="2" y1="2" x2="9" y2="9" stroke-linecap="round" />
+              <line x1="9" y1="2" x2="2" y2="9" stroke-linecap="round" />
+            </svg>
+          </span>
         </Show>
+        {/* Password visibility toggle */}
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-label={showPwd() ? "Ocultar senha" : "Exibir senha"}
+          onClick={() => setShowPwd((v) => !v)}
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-stone-500 hover:text-stone-300 transition-colors duration-150"
+        >
+          <Show
+            when={showPwd()}
+            fallback={
+              /* Eye open */
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+                <path d="M1 7C2.5 4 4.5 2.5 7 2.5S11.5 4 13 7c-1.5 3-3.5 4.5-6 4.5S2.5 10 1 7z" />
+                <circle cx="7" cy="7" r="1.8" />
+              </svg>
+            }
+          >
+            {/* Eye closed */}
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+              <path d="M1 7C2.5 4 4.5 2.5 7 2.5S11.5 4 13 7c-1.5 3-3.5 4.5-6 4.5S2.5 10 1 7z" />
+              <circle cx="7" cy="7" r="1.8" />
+              <line x1="2" y1="2" x2="12" y2="12" stroke-linecap="round" />
+            </svg>
+          </Show>
+        </button>
       </div>
 
       {/* Strength meter — only shown when showStrength=true and field has content */}
