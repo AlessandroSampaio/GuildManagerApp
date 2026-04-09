@@ -200,12 +200,9 @@ const Sidebar: Component = () => {
 
   async function logout() {
     const rt = authStore.refreshToken();
-    if (rt)
-      await authApi
-        .logout(rt)
-        .then(() => nav("/"))
-        .catch(() => {});
     authStore.clear();
+    if (rt) await authApi.logout(rt).catch(() => {});
+    nav("/login", { replace: true });
   }
 
   const initials = () => (authStore.user()?.username ?? "?")[0].toUpperCase();
