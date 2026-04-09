@@ -1,13 +1,20 @@
 import SectionHeader from "@/components/ui/SectionHeader";
 import { SkeletonList } from "@/components/ui/Skeleton";
 import { classColor, raiderIoScoreColor } from "@/helpers/colors";
-import { useMyCharacters } from "@/lib/queries/character";
 import { authStore } from "@/stores/auth";
+import { characterKeys } from "@/lib/query-keys";
+import { charactersApi } from "@/api/characters";
+import { useQuery } from "@tanstack/solid-query";
 import { useNavigate } from "@solidjs/router";
 import { Component, For, Show } from "solid-js";
 
 const DashboardPage: Component = () => {
-  const characters = useMyCharacters(true);
+  const characters = useQuery(() => ({
+    queryKey: characterKeys.mine(true),
+    queryFn: () => charactersApi.getMyCharacters(true),
+    staleTime: Infinity,
+    gcTime: 0,
+  }));
   const navigate = useNavigate();
 
   return (
