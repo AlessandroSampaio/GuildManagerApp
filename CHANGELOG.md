@@ -5,6 +5,16 @@ Formato: [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/)
 
 ## [Unreleased]
 
+## [0.4.3] - 2026-04-29
+
+## Added
+- Ordena personagens no dashboard por score decrescente
+- Adiciona metodos para redefinição de senha
+
+## Fixed
+- Corrige falha no processo de logout
+- Formulário de login agora e corretamente renderizado em resoluções menores
+
 ## [0.4.2] - 2026-04-08
 
 ### Added
