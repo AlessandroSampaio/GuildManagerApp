@@ -6,7 +6,7 @@ import { characterKeys } from "@/lib/query-keys";
 import { charactersApi } from "@/api/characters";
 import { useQuery } from "@tanstack/solid-query";
 import { useNavigate } from "@solidjs/router";
-import { Component, For, Show } from "solid-js";
+import { Component, For, Show, createMemo } from "solid-js";
 
 const DashboardPage: Component = () => {
   const characters = useQuery(() => ({
@@ -15,6 +15,12 @@ const DashboardPage: Component = () => {
     staleTime: Infinity,
     gcTime: 0,
   }));
+
+  const sortedCharacters = createMemo(() =>
+    [...(characters.data ?? [])].sort(
+      (a, b) => (b.raiderIoSnapshot?.score ?? 0) - (a.raiderIoSnapshot?.score ?? 0)
+    )
+  );
   const navigate = useNavigate();
 
   return (
@@ -59,7 +65,7 @@ const DashboardPage: Component = () => {
             when={characters.isSuccess && (characters.data?.length ?? 0) > 0}
           >
             <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              <For each={characters.data}>
+              <For each={sortedCharacters()}>
                 {(char, i) => (
                   <div
                     class="flex items-center gap-3 px-3 py-2 bg-void-800/40 border border-void-700
